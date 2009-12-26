@@ -1,0 +1,9 @@
+Class/Module usage is awesome and provides a lot of flexibility. It would be really awesome to be able to use the joy of Ruby to construct html. 
+
+What about the other templating Ruby systems that are so awesome?
+- ERB: Makes the developer write HTML with all its little its angle bracket inefficiencies.
+- HAML: Eases this pain, by drying up the markup, but the developer it isn't Ruby
+- Markaby: Is Ruby, but operates in the singleton space taking away much of the power of ruby. It is filled with phenomenal meta-magic, that can also be hard to debug.
+- Erector: Tries to solve this gap in the Ruby landscape but has a hard to negotiate DSL, fraught with the wrong types of suprises.  
+
+What if you could have short and sweet markup dsl with all the joys of Ruby. You would have ???
