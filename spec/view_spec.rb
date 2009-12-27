@@ -13,7 +13,14 @@ describe Arch::View do
     it 'the class should store a list of required local variables' do 
       NeedyView.required.should == ['x', 'y']
       SelectiveView.required.should == ['x', 'y'] 
-    end
+    end  
+    
+    it 'should add to the required local of the subclass' do
+      class ExtraNeedy < NeedyView  
+        requires :z
+      end 
+      ExtraNeedy.required.should == ['x', 'y', 'z'] 
+    end  
     
     it '#requires and #requires_only should allow the last argument to be a hash with default values' do 
       class LessNeedy < Arch::View 
@@ -62,8 +69,6 @@ describe Arch::View do
       view['this'].should == 'that'
       view[:this].should == 'that'
     end 
-    
-     
   end  
   
   describe 'engine' do 
@@ -133,7 +138,10 @@ describe Arch::View do
     
     describe 'clearing instances' do 
       it 'should clear important values' do 
-        pending( 'there aren\'t yet important values')
+        view = Arch::View.new(:this => 'that')
+        view[:this].should == 'that'
+        view.clear
+        view[:this].should == nil
       end 
       
       it 'should be called by #recycle' do

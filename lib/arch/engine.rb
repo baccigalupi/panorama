@@ -3,9 +3,6 @@ module Arch
     class Default
     end
     
-    class Haml
-    end
-    
     class ERB
     end      
   end

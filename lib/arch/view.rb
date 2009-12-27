@@ -20,8 +20,11 @@ module Arch
       if args.last.class == Hash
         @defaults = Hash.new( args.pop )
         args += defaults.keys
-      end
-      @required = args.map{ |x| x.to_s }
+      end 
+      if superclass.respond_to?( :required ) 
+        args = (superclass.required || []) + args  
+      end  
+      @required = args.uniq.map{ |x| x.to_s }
     end 
     
     def self.defaults
@@ -73,7 +76,7 @@ module Arch
     end 
     
     def clear
-      # clear all the important instance variables, so they aren't used an reincarnation
+      @locals = Gnash.new
     end      
     
     # Rendering --------------------------------
@@ -83,8 +86,13 @@ module Arch
       view.recycle
       output
     end
+    
+    def markup
+      ""
+    end  
      
     def render
+      self.class.engine.render(markup)
     end      
   end
 end    
