@@ -91,8 +91,9 @@ module Arch
       ""
     end  
      
-    def render
-      self.class.engine.render(markup)
+    def render 
+      opts = locals.merge(:scope => self)
+      self.class.engine.render(markup, opts)
     end      
   end
 end    
