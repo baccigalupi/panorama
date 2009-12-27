@@ -35,21 +35,27 @@ describe "Haml Views" do
   end
   
   
-  describe 'unindented markup' do
-# SETUP THE CLASSES WITH SOME MARKUP ---------------    
-    method = '%h1 Hello #{self[:name]}' 
-    Simple.class_eval "
-      def markup
-        \"#{method}\" 
-      end  
-    " 
+  describe 'unindented markup' do 
+    before do
+      @title = "<h1>Hello Kane</h1>"
+    end  
     
-    method = 
+# SETUP THE CLASSES WITH SOME MARKUP ---------------    
+class Simple 
+  def markup
+"%h1 
+  Hello
+  = self[:name]"
+  end
+end  
+   
+method = 
 '
 #{super}
 %p  
   Your full designation is:
-  %b #{long_name}  
+  %b 
+    = long_name  
 '    
     Titleous.class_eval "
         def markup 
@@ -60,12 +66,13 @@ describe "Haml Views" do
     
     it 'should render local variables' do 
       output = Simple.render(:name => 'Kane')
-      output.should == "<h1>Hello Kane</h1>\n"
+      output.should include( "Kane" ) 
     end
   
     it 'should render methods' do
       output = Titleous.render(:name => 'Kane', :title => 'Cog in Wheel')
-      output.should == @output
+      output.should include( "Kane" )
+      output.should include( "Cog in Wheel" )
     end 
   end 
 
