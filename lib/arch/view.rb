@@ -87,6 +87,10 @@ module Arch
       output
     end
     
+    def context
+      return binding
+    end  
+    
     def markup
       ""
     end  
