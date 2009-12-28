@@ -25,4 +25,12 @@ describe Arch::ClosedTag  do
       HR.new(:this => 'that').render.should == "<hr this=\"that\" />"
     end       
   end  
+  
+  it 'should have a constant that holds calculated class names for all tags' do
+    Arch::ClosedTag::CLASS_NAMES.should include("BR", "HR")   # just a random assortment
+  end
+  
+  it 'should generate subclasses' do  
+    lambda{ Arch::BR.new }.should_not raise_error
+  end  
 end 

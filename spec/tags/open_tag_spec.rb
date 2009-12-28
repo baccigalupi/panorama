@@ -48,6 +48,14 @@ describe Arch::OpenTag  do
           tag.render.should == "<a href=\"http://rubyghetto.com\">my crappy blog</a>"  
         end   
       end    
-    end      
+    end
+    
+    it 'should have a constant that holds calculated class names for all tags' do
+      Arch::OpenTag::CLASS_NAMES.should include("A", "EM", "UL", "LI")   # just a random assortment
+    end
+    
+    it 'should generate subclasses' do  
+      lambda{ Arch::EM.new }.should_not raise_error
+    end          
   end    
 end

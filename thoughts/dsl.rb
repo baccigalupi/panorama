@@ -23,7 +23,7 @@ def markup
       }
     
       # id is designated with an !, A string can be appended to the argument list and get contained
-      ! :body, "Quotes should be loved! Just like people!" 
+      | :body, "Quotes should be loved! Just like people!" 
     
       # loop it good!
       (1..3).each do |number|
