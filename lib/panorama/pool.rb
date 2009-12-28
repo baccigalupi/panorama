@@ -1,4 +1,4 @@
-module Arch
+module Panorama
   class Pool < Array 
     undef_method :[]
     undef_method :[]=

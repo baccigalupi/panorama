@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe Arch::OpenTag  do
+describe Panorama::OpenTag  do
   describe 'rendering' do
-    class A < Arch::OpenTag; end   
+    class A < Panorama::OpenTag; end   
       
     before(:each) do
       @tag = A.new
@@ -21,8 +21,8 @@ describe Arch::OpenTag  do
       it 'should include the id' do
         @tag[:my_id] 
         @tag.render.should == "<a id=\"my_id\"></a>"
-      end
-    
+      end 
+      
       it 'should include other data attributes' do   
         A.new(:data => 'do this').render.should == "<a data=\"do this\"></a>"
       end 
@@ -51,11 +51,11 @@ describe Arch::OpenTag  do
     end
     
     it 'should have a constant that holds calculated class names for all tags' do
-      Arch::OpenTag::CLASS_NAMES.should include("A", "EM", "UL", "LI")   # just a random assortment
+      Panorama::OpenTag::CLASS_NAMES.should include("A", "EM", "UL", "LI")   # just a random assortment
     end
     
     it 'should generate subclasses' do  
-      lambda{ Arch::EM.new }.should_not raise_error
+      lambda{ Panorama::EM.new }.should_not raise_error
     end          
   end    
 end

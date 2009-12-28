@@ -1,4 +1,4 @@
-module Arch
+module Panorama
   class View
     attr_reader :locals 
     
@@ -51,7 +51,7 @@ module Arch
     extend HasEngine
     
     def self.default_engine_type
-      superclass.respond_to?(:engine_type) ? superclass.engine_type : Arch.engine_type
+      superclass.respond_to?(:engine_type) ? superclass.engine_type : Panorama.engine_type
     end
     
     # Instance Pooling --------------------------
@@ -87,17 +87,42 @@ module Arch
       output
     end
     
+    # needed by erb to grab the bindings of the object
     def context
       return binding
     end  
     
     def markup
       ""
-    end  
+    end
+    
+    def engine_type
+      self.class.engine_type
+    end    
      
-    def render 
+    def render
+      if engine_type == :panorama
+        render_panorama
+      else
+        render_external
+      end    
+    end 
+    
+    def render_panorama
+      output.clear
+      markup
+      output.map{|proxy| proxy.render}
+    end
+    
+    def output
+      @output ||= []
+    end  
+    
+    def render_external 
       opts = locals.merge(:scope => self)
       self.class.engine.render(markup, opts)
-    end      
+    end  
+    
+    include Engine::HtmlMethods      
   end
 end    

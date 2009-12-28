@@ -1,7 +1,7 @@
-module Arch
+module Panorama
   module HasEngine
      def default_engine_type 
-      :arch
+      :panorama
     end
     
     def engine_type(t=nil)
@@ -12,12 +12,12 @@ module Arch
     end 
   
     def engine_type=( t )
-      raise ArgumentError, "Rendering engine :#{t} unknown" unless Arch::AVAILABLE_ENGINES.keys.include?( t )
+      raise ArgumentError, "Rendering engine :#{t} unknown" unless Panorama::AVAILABLE_ENGINES.keys.include?( t )
       @engine_type = t
     end  
   
     def engine
-      Arch::AVAILABLE_ENGINES[engine_type]  
+      Panorama::AVAILABLE_ENGINES[engine_type]  
     end      
   end
 end    

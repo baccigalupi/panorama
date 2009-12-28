@@ -1,11 +1,10 @@
-module Arch
+module Panorama
   class OpenTag < Tag
     attr_accessor :content
-    attr_reader :block
     
     def initialize(opts={}, &blk) 
       super(opts)
-      @block = blk
+      self.content = blk
      end  
     
     def self.head
@@ -14,16 +13,23 @@ module Arch
     
     def self.tail
       @tail ||= "</#{type}>"
-    end 
+    end
+    
+    def [](val)
+      super(val) 
+      self.content = blk
+    end  
+    
+    def render_content
+      content.is_a?(Proc) ? content.call : content
+    end   
       
     def render(&blk) 
       output = head 
       if block_given? 
         output << yield
-      elsif block
-        output << block.call  
       elsif content 
-        output << content
+        output << render_content
       end  
       output << tail
       output
@@ -51,7 +57,7 @@ module Arch
   end
   
   OpenTag::CLASS_NAMES.each do |name| 
-    Arch.class_eval "
+    Panorama.class_eval "
       class #{name} < OpenTag; end
     "
   end   

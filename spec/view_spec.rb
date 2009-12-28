@@ -1,12 +1,12 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe Arch::View do
+describe Panorama::View do
   describe 'local variables' do 
-    class NeedyView < Arch::View
+    class NeedyView < Panorama::View
       requires :x, :y 
     end
     
-    class SelectiveView < Arch::View 
+    class SelectiveView < Panorama::View 
       requires_only :x, :y
     end   
     
@@ -23,7 +23,7 @@ describe Arch::View do
     end  
     
     it '#requires and #requires_only should allow the last argument to be a hash with default values' do 
-      class LessNeedy < Arch::View 
+      class LessNeedy < Panorama::View 
         requires :x => 'x', :y => 'y'
       end 
       lambda{ LessNeedy.new }.should_not raise_error
@@ -31,7 +31,7 @@ describe Arch::View do
     
     describe 'initialization' do 
       it 'should make local variables accessible as a hash in @locals' do  
-        view = Arch::View.new(:this => 'that')
+        view = Panorama::View.new(:this => 'that')
         view.instance_variable_get("@locals").should == Gnash.new(:this => 'that')
       end 
       
@@ -65,87 +65,87 @@ describe Arch::View do
     end
     
     it 'locals should be accessible via the [] accessor' do
-      view = Arch::View.new(:this => 'that')
+      view = Panorama::View.new(:this => 'that')
       view['this'].should == 'that'
       view[:this].should == 'that'
     end 
   end  
   
   describe 'engine' do 
-    it 'should default to Arch default engine' do 
-      Arch.engine_type = :arch
-      Arch::View.engine.should == Arch.engine
-      Arch::View.instance_variable_set("@engine_type", nil)
-      Arch.engine_type = :haml      
-      Arch::View.engine.should == Arch.engine
+    it 'should default to Panorama default engine' do 
+      Panorama.engine_type = :panorama
+      Panorama::View.engine.should == Panorama.engine
+      Panorama::View.instance_variable_set("@engine_type", nil)
+      Panorama.engine_type = :haml      
+      Panorama::View.engine.should == Panorama.engine
     end 
     
     it 'should be settable' do
-      Arch::View.engine_type = :erb
-      Arch::View.engine.should == Arch::Engine::ERB
+      Panorama::View.engine_type = :erb
+      Panorama::View.engine.should == Panorama::Engine::ERB
     end  
     
     it 'should inherit default from superclass' do  
-      Arch::View.engine_type = :haml 
-      class Partial < Arch::View
+      Panorama::View.engine_type = :haml 
+      class Partial < Panorama::View
       end  
-      Partial.engine.should == Arch::Engine::Haml
+      Partial.engine.should == Panorama::Engine::Haml
     end    
   end
   
   describe 'rendering' do 
     before(:each) do  
-      Arch::View.instance_variable_set("@pool", nil) # clearing it out
+      Panorama::View.instance_variable_set("@pool", nil) # clearing it out
     end
     
     it 'should create an instance' do 
-      view = Arch::View.new
-      Arch::View.should_receive(:new).and_return( view )
-      Arch::View.render
+      view = Panorama::View.new
+      Panorama::View.should_receive(:new).and_return( view )
+      Panorama::View.render
     end 
     
     it 'should recycle instances to the pool' do
-      view = Arch::View.new
-      Arch::View.should_receive(:new).and_return( view )
+      view = Panorama::View.new
+      Panorama::View.should_receive(:new).and_return( view )
       view.should_receive(:recycle)
-      Arch::View.render
+      Panorama::View.render
     end
     
     it 'should grab a recycled instance instead of creating a new one' do 
-      view = Arch::View.new
-      Arch::View.render 
-      Arch::View.should_not_receive(:new)
-      pool = Arch::Pool.new(20)
-      Arch::View.stub!(:pool).and_return( pool )
+      view = Panorama::View.new
+      Panorama::View.render 
+      Panorama::View.should_not_receive(:new)
+      pool = Panorama::Pool.new(20)
+      Panorama::View.stub!(:pool).and_return( pool )
       pool.should_receive(:get).and_return( view)
-      Arch::View.render
-    end     
+      Panorama::View.render
+    end
   end
   
   describe 'pooling' do
     describe 'max pool size' do  
       it 'should have a default' do  
-        Arch::View.max_pool_size.should == 20
+        Panorama::View.max_pool_size.should == 20
       end 
       
       it 'should be settable' do 
-        Arch::View.max_pool_size = 30
-        Arch::View.max_pool_size.should == 30
-        Arch::View.max_pool_size( 15 )
-        Arch::View.max_pool_size.should == 15
+        Panorama::View.max_pool_size = 30
+        Panorama::View.max_pool_size.should == 30
+        Panorama::View.max_pool_size( 15 )
+        Panorama::View.max_pool_size.should == 15
       end   
     end 
     
     describe 'clearing instances' do 
       it 'should clear important values' do 
-        view = Arch::View.new(:this => 'that')
+        view = Panorama::View.new(:this => 'that')
         view[:this].should == 'that'
         view.clear
         view[:this].should == nil
       end 
       
       it 'should be called by #recycle' do
-        view = Arch::View.new
+        view = Panorama::View.new
         view.should_receive(:clear)
         view.recycle
       end   
@@ -153,17 +153,17 @@ describe Arch::View do
     
     describe 'pool' do
       before(:each) do  
-        Arch::View.instance_variable_set("@pool", nil) # clearing it out
+        Panorama::View.instance_variable_set("@pool", nil) # clearing it out
       end
          
       it 'should be an empty by default' do
-        Arch::View.pool.empty?.should == true
+        Panorama::View.pool.empty?.should == true
       end 
       
       it 'should add instances when they are recycled' do 
-        Arch::View.pool.should be_empty
-        Arch::View.new.recycle
-        Arch::View.pool.size.should == 1
+        Panorama::View.pool.should be_empty
+        Panorama::View.new.recycle
+        Panorama::View.pool.size.should == 1
       end   
     end    
   end      

@@ -10,18 +10,18 @@ describe "Haml Views" do
 " 
   end
     
-  describe Arch::Engine::Haml do
+  describe Panorama::Engine::Haml do
     it 'should render an empty string' do
-      Arch::Engine::Haml.render("", {:scope => Object.new}).should == ""
+      Panorama::Engine::Haml.render("", {:scope => Object.new}).should == ""
     end
   
     it 'should do some other hamlish stuff' do
-      Arch::Engine::Haml.render("%p\n foo\n%q\n bar\n %a\n  baz", {:scope => Object.new}).should == "<p>\n  foo\n</p>\n<q>\n  bar\n  <a>\n    baz\n  </a>\n</q>\n"
-      Arch::Engine::Haml.render('%p Hello #{who}', {:scope => Object.new, :locals => {:who => 'World'}}).should == "<p>Hello World</p>\n"
+      Panorama::Engine::Haml.render("%p\n foo\n%q\n bar\n %a\n  baz", {:scope => Object.new}).should == "<p>\n  foo\n</p>\n<q>\n  bar\n  <a>\n    baz\n  </a>\n</q>\n"
+      Panorama::Engine::Haml.render('%p Hello #{who}', {:scope => Object.new, :locals => {:who => 'World'}}).should == "<p>Hello World</p>\n"
     end  
   end 
   
-  class Simple < Arch::View
+  class Simple < Panorama::View
     engine_type :haml 
     requires :name
   end     
@@ -105,7 +105,7 @@ SUPER
     end 
     
     it 'should strip leading indents' do
-      Arch::Engine::Haml.strip_leading_indent(@indented_string).should == @fixed_string
+      Panorama::Engine::Haml.strip_leading_indent(@indented_string).should == @fixed_string
     end    
     
     it 'should render' do

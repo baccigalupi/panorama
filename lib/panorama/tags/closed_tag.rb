@@ -1,4 +1,4 @@
-module Arch
+module Panorama
   class ClosedTag < Tag
     def self.head
       @head ||= "<#{type}#{SUBSTITUTION_STRING}" 
@@ -19,7 +19,7 @@ module Arch
   end
   
   ClosedTag::CLASS_NAMES.each do |name| 
-    Arch.class_eval "
+    Panorama.class_eval "
       class #{name} < ClosedTag; end
     "
   end    

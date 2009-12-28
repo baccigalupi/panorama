@@ -1,6 +1,6 @@
 require 'haml'
 
-module Arch
+module Panorama
   module Engine
     class Haml 
       def self.render(text, options = {}, &block)

@@ -1,18 +1,18 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe Arch::Tag  do
+describe Panorama::Tag  do
   it 'should infer the type of tag from the class' do 
-    Arch::Tag.type.should == :tag 
-    Arch::Tag.new.type.should == :tag
+    Panorama::Tag.type.should == :tag 
+    Panorama::Tag.new.type.should == :tag
     
     # oh, inheritance!
-    class Hr < Arch::Tag; end
+    class Hr < Panorama::Tag; end
     Hr.type.should == :hr     
   end
   
   describe 'css classes' do 
     before(:each) do
-      @tag = Arch::Tag.new
+      @tag = Panorama::Tag.new
     end 
     
     it 'should * a class in' do 
@@ -41,14 +41,14 @@ describe Arch::Tag  do
     end 
     
     it 'should receive classes from options in inintialization' do 
-      tag = Arch::Tag.new(:class => [:one, 'two'])
+      tag = Panorama::Tag.new(:class => [:one, 'two'])
       tag.classes.should include(:one, :two)
     end    
   end
   
   describe 'element id' do
     before(:each) do
-      @tag = Arch::Tag.new
+      @tag = Panorama::Tag.new
     end 
     
     it 'should | an id into the tag ' do 
@@ -71,7 +71,7 @@ describe Arch::Tag  do
     end 
     
     it 'should receive id from options in inintialization' do 
-      tag = Arch::Tag.new(:id => 'one')
+      tag = Panorama::Tag.new(:id => 'one')
       tag.element_id.should == :one
     end
     
@@ -88,7 +88,7 @@ describe Arch::Tag  do
   
   describe 'attributes' do 
     before(:each) do
-      @tag = Arch::Tag.new
+      @tag = Panorama::Tag.new
     end 
     
     it 'should have attributes' do
@@ -106,7 +106,7 @@ describe Arch::Tag  do
     end 
     
     it 'should concatenate other passed in arguments' do 
-      tag = Arch::Tag.new(:this => 'that')
+      tag = Panorama::Tag.new(:this => 'that')
       tag.attributes[:this].should == 'that'
     end      
   end     

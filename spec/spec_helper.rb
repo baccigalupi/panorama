@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'spec'
 
-require File.dirname(__FILE__) + '/../lib/arch'
+require File.dirname(__FILE__) + '/../lib/panorama'
 
 
 Spec::Runner.configure do |config|

@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe Arch::ClosedTag  do 
+describe Panorama::ClosedTag  do 
   describe 'rendering' do
     before(:each) do
-      class HR < Arch::ClosedTag
+      class HR < Panorama::ClosedTag
       end   
       @tag = HR.new
     end  
@@ -27,10 +27,10 @@ describe Arch::ClosedTag  do
   end  
   
   it 'should have a constant that holds calculated class names for all tags' do
-    Arch::ClosedTag::CLASS_NAMES.should include("BR", "HR")   # just a random assortment
+    Panorama::ClosedTag::CLASS_NAMES.should include("BR", "HR")   # just a random assortment
   end
   
   it 'should generate subclasses' do  
-    lambda{ Arch::BR.new }.should_not raise_error
+    lambda{ Panorama::BR.new }.should_not raise_error
   end  
 end 

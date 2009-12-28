@@ -1,4 +1,4 @@
-module Arch
+module Panorama
   class Tag 
     SUBSTITUTION_STRING = "{{}}"
     
@@ -11,7 +11,7 @@ module Arch
     end  
      
     def self.type
-      @tag ||= self.to_s.downcase.gsub("arch::", '').to_sym
+      @tag ||= self.to_s.downcase.gsub("panorama::", '').to_sym
     end 
     
     def type
@@ -36,8 +36,13 @@ module Arch
       if val 
         begin
           @element_id = val.to_sym
-        rescue
-          raise ArgumentError, "A tag can only have one element id. Please assign it with a string or symbol."
+        rescue 
+          if val.is_a?(Array) && val.size == 1
+            val = val.first 
+            self | val
+          else 
+            raise ArgumentError, "A tag can only have one element id. Please assign it with a string or symbol."
+          end
         end
       end    
       self  

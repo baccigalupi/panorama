@@ -1,0 +1,23 @@
+require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+
+describe Panorama do 
+  describe 'default engine' do
+    it 'should be of type :panorama' do
+      Panorama.engine_type.should == :panorama
+      Panorama.engine.should == Panorama::Engine::Default
+    end 
+  
+    it 'should be changable to known types' do  
+      Panorama.engine_type = :haml
+      Panorama.engine_type.should == :haml
+      Panorama.engine.should == Panorama::Engine::Haml
+      Panorama.engine_type( :erb )
+      Panorama.engine_type.should == :erb
+      Panorama.engine.should == Panorama::Engine::ERB 
+    end
+  
+    it 'should raise an error when assigning to unknown engine' do 
+      lambda { Panorama.engine_type = :goofy }.should raise_error(ArgumentError, "Rendering engine :#{:goofy} unknown")
+    end 
+  end   
+end        

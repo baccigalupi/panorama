@@ -1,13 +1,13 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "ERB Views" do
-  describe Arch::Engine::ERB do
+  describe Panorama::Engine::ERB do
     it 'should render an empty string' do
-      Arch::Engine::ERB.render("").should == ""
+      Panorama::Engine::ERB.render("").should == ""
     end
   end 
   
-  class Simple < Arch::View
+  class Simple < Panorama::View
     engine_type :erb 
     requires :name 
     
