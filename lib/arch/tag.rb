@@ -1,5 +1,7 @@
 module Arch
-  class Tag
+  class Tag 
+    SUBSTITUTION_STRING = "{{}}"
+    
     attr_reader :element_id, :data_attrs
     def initialize(opts={})
       opts = Gnash.new(opts)
@@ -59,6 +61,23 @@ module Arch
       att[:id] = element_id.to_s if element_id 
       att.merge!(data_attrs) if data_attrs && !data_attrs.empty?
       att
-    end        
+    end 
+    
+    # Rendering: Used by subclasses ----------
+        def head( str=attribute_string )
+      self.class.head.gsub( SUBSTITUTION_STRING, str )
+    end
+    
+    def tail
+      self.class.tail
+    end 
+    
+    def attribute_string 
+      output = ""
+      attributes.each do |arr|
+        output << " #{arr[0]}=\"#{arr[1]}\""
+      end
+      output  
+    end     
   end
 end    
