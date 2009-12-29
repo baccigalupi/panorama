@@ -70,8 +70,13 @@ describe "Tag Proxying"  do
     end
     
     describe 'rendering' do
+      it 'should require an output at render time' do 
+        proxy = Panorama::Proxy.new('my text', :type => 'em') 
+        lambda{proxy.render}.should raise_error("Output required to render a tag proxy. Please set it on proxy initialization, or pass it in to render as the first argument")
+      end  
+      
       it 'should delegate render to the tag' do 
-        proxy = Panorama::Proxy.new('my text', :type => 'em', :output => [])
+        proxy = Panorama::Proxy.new('my text', :type => 'em', :output => "")
         proxy.render.should == proxy.tag.render
       end 
     end   
