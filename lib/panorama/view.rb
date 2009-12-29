@@ -109,14 +109,23 @@ module Panorama
     end 
     
     def render_panorama
-      output.clear
+      clear_output
       markup
-      output.map{|proxy| proxy.render}
+      output_proxies.dup.map{|proxy| proxy.render}.flatten
     end
+    
+    def clear_output 
+      output.clear 
+      output_proxies.clear
+    end  
     
     def output
       @output ||= []
-    end  
+    end 
+    
+    def output_proxies
+      @output_proxies ||= []
+    end   
     
     def render_external 
       opts = locals.merge(:scope => self)

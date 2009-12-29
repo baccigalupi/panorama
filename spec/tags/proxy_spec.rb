@@ -30,10 +30,19 @@ describe "Tag Proxying"  do
     end    
   end  
   
-  describe 'Proxy' do
+  describe 'Proxy' do 
+     describe 'initialization' do
+      it 'insists on a valid tag type' do
+        lambda{ Panorama::Proxy.new('my text', :output => [])}.should raise_error(
+          ArgumentError, "Valid tag type required to generate a tag proxy. '' is not a valid tag type."
+        )
+      end     
+    end
+    
     it 'should have a tag' do
       proxy = Panorama::Proxy.new(
-        :type => 'em'
+        :type => 'em',
+        :output => []
       )  
       proxy.tag.class.should == Panorama::EM 
     end
@@ -42,7 +51,8 @@ describe "Tag Proxying"  do
       proxy = Panorama::Proxy.new(
         :type => 'em',
         :class => [:one, :two],
-        :id => :my_id
+        :id => :my_id,
+        :output => []
       )
       proxy.tag.classes.should include( :one, :two )
       proxy.tag.element_id.should == :my_id
@@ -59,10 +69,12 @@ describe "Tag Proxying"  do
       proxy.tag.content.should == 'my text'
     end
     
-    it 'should delegate render to the tag' do 
-      proxy = Panorama::Proxy.new('my text', :type => 'em')
-      proxy.render.should == proxy.tag.render
-    end       
+    describe 'rendering' do
+      it 'should delegate render to the tag' do 
+        proxy = Panorama::Proxy.new('my text', :type => 'em', :output => [])
+        proxy.render.should == proxy.tag.render
+      end 
+    end   
     
     describe 'better dsl' do
       # ???

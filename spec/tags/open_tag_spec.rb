@@ -46,7 +46,14 @@ describe Panorama::OpenTag  do
             'my crappy blog'
           end
           tag.render.should == "<a href=\"http://rubyghetto.com\">my crappy blog</a>"  
-        end   
+        end
+        
+        it 'should render blocks with tag proxies' do 
+          tag = A.new(:href => 'http://rubyghetto.com') do
+            Panorama::Proxy.new(:type =>'img', :src => "http://rubyghetto.com/images/ruby_ghetto.gif")
+          end
+          tag.render.should == "<a href=\"http://rubyghetto.com\"><img src=\"http://rubyghetto.com/images/ruby_ghetto.gif\" /></a>"  
+        end     
       end    
     end
     
@@ -56,6 +63,15 @@ describe Panorama::OpenTag  do
     
     it 'should generate subclasses' do  
       lambda{ Panorama::EM.new }.should_not raise_error
-    end          
+    end
+    
+    it 'should inspect in a meaningful way' do 
+      tag = A.new(:class => [:external]) 
+      tag.content = 'my link'
+      tag.inspect.should == "#<A <a class=\"external\">my link</a> >"
+      
+      tag_with_block = A.new(:href => 'http://rubyghetto.com') {'my crappy blog'}
+      tag_with_block.inspect.should == "#<A <a href=\"http://rubyghetto.com\">{block}</a> >"
+    end            
   end    
 end

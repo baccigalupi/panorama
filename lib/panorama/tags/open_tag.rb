@@ -1,7 +1,5 @@
 module Panorama
   class OpenTag < Tag
-    attr_accessor :content
-    
     def initialize(opts={}, &blk) 
       super(opts)
       self.content = blk
@@ -15,25 +13,43 @@ module Panorama
       @tail ||= "</#{type}>"
     end
     
-    def [](val)
+    def [](val, &blk)
       super(val) 
       self.content = blk
     end  
     
+    attr_accessor :content 
     def render_content
       content.is_a?(Proc) ? content.call : content
-    end   
-      
-    def render(&blk) 
-      output = head 
-      if block_given? 
-        output << yield
-      elsif content 
-        output << render_content
-      end  
-      output << tail
+    end
+    
+    attr_writer :output
+    def output 
+      @output ||= []
+    end
+    
+    require 'cgi'  
+    def render(&blk)
+      self.content = blk if block_given? 
+      self.output = head 
+      self.output << middle  
+      self.output << tail
       output
-    end  
+    end
+    
+    def middle
+      buffer = content ? render_content : ''
+      return buffer if buffer.is_a? String 
+      if buffer.respond_to?(:each)
+        buffer.each {|element| element.inpsect } 
+      else
+        buffer.render
+      end    
+    end
+    
+    def inspect
+      "#<#{self.class} #{head}#{content.is_a?(String) ? content : '{block}'}#{tail} >"
+    end    
 
     METHOD_NAMES = [
       'a', 'abbr', 'acronym', 'address', 

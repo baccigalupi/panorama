@@ -43,7 +43,8 @@ describe "Default Views" do
       def markup
         super
         p(:class => 'clearfix', :id => 'jabber') do 
-          "I am just a " + self[:job_title]
+          span "I am just a "
+          b self[:job_title]
         end  
       end  
     end   
@@ -57,15 +58,26 @@ describe "Default Views" do
       @view.render
     end
     
-    it 'should add proxies to the output' do 
-      view = SimpleView.new(:name => 'Kane')
-      view.render                
-      view.output.size.should == 1
+    it 'should add proxies to the output_proxies list' do 
+      view = SimpleView.new(:name => 'Kane') 
+      view.markup
+      view.output_proxies.size.should == 1
     end 
     
-    it 'should render all the proxies in order' do 
+    it 'should render a really simple view' do 
       view = SimpleView.new(:name => 'Kane')
-      view.render.should == ["<h1>Kane</h1>"]
-    end       
+      view.render.should == ["<h1>Kane</h1>"]  
+    end
+    
+    it 'should render via supering to the superclass' do  
+      view = WordierView.new(:name => 'Kane', :job_title => 'Cog in Wheel')
+      view.render.first.should == "<h1>Kane</h1>"
+    end
+    
+    it 'should render in order' do 
+      view = WordierView.new(:name => 'Kane', :job_title => 'Cog in Wheel')
+      view.render[1].should == "<p class=\"clearfix\" id=\"jabber\"><span>I am just a</span><b>Cog in Wheel</b></p>"
+    end      
+        
   end   
 end
