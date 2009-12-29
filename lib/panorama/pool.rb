@@ -1,35 +1,38 @@
 module Panorama
-  class Pool < Array 
-    undef_method :[]
-    undef_method :[]=
-    undef_method :&
-    undef_method :*
-    undef_method :+
-    undef_method :-
-    undef_method :<<
-    undef_method :at
-    undef_method :collect
-    undef_method :compact
-    undef_method :delete
-    undef_method :delete_at
-    undef_method :delete_if
-    undef_method :each
-    undef_method :fetch
-    undef_method :first
-    undef_method :flatten
-    undef_method :insert 
-    undef_method :join
-    undef_method :last
-    undef_method :map
-    undef_method :pack
-    undef_method :reject   
-    undef_method :replace   
-    undef_method :reverse   
-    undef_method :select   
-    undef_method :slice   
-    undef_method :sort   
-    undef_method :uniq   
-    undef_method :unshift   
+  class Pool < Array
+    # the if statement seems to be necessary when specs are run from 'rake spec' ??? 
+    if instance_methods.include?(:[])
+      undef_method :[]
+      undef_method :[]=
+      undef_method :&
+      undef_method :*
+      undef_method :+
+      undef_method :-
+      undef_method :<<
+      undef_method :at
+      undef_method :collect
+      undef_method :compact
+      undef_method :delete
+      undef_method :delete_at
+      undef_method :delete_if
+      undef_method :each
+      undef_method :fetch
+      undef_method :first
+      undef_method :flatten
+      undef_method :insert 
+      undef_method :join
+      undef_method :last
+      undef_method :map
+      undef_method :pack
+      undef_method :reject   
+      undef_method :replace   
+      undef_method :reverse   
+      undef_method :select   
+      undef_method :slice   
+      undef_method :sort   
+      undef_method :uniq   
+      undef_method :unshift   
+    end  
   
     attr_accessor :max_size
     def initialize( max_size ) 
