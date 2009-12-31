@@ -1,5 +1,7 @@
 module Panorama
   class OpenTag < Tag
+    attr_accessor :content 
+    
     def initialize(opts={}, &blk) 
       super(opts)
       self.content = blk
@@ -18,33 +20,33 @@ module Panorama
       self.content = blk
     end  
     
-    attr_accessor :content 
-    def render_content
-      content.is_a?(Proc) ? content.call : content
-    end
-    
     attr_writer :output
     def output 
       @output ||= []
     end
     
-    require 'cgi'  
     def render(&blk)
-      self.content = blk if block_given? 
       self.output = head 
-      self.output << middle  
+      
+      self.content = blk if block_given? 
+      middle # renders to output itself!
+      
       self.output << tail
       output
+    end  
+    
+    def render_content
+      content.is_a?(Proc) ? content.call : content
     end
     
     def middle
-      buffer = content ? render_content : ''
-      return buffer if buffer.is_a? String 
-      if buffer.respond_to?(:each)
-        buffer.each {|element| element.inpsect } 
+      returned_content = content ? render_content : '' 
+      buffer = proxy_buffer.dump
+      if buffer.empty? 
+        output << returned_content
       else
-        buffer.render
-      end    
+        buffer.map{|proxy| proxy.render(output)}
+      end
     end
     
     def inspect

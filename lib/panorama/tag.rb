@@ -2,6 +2,8 @@ module Panorama
   class Tag 
     SUBSTITUTION_STRING = "{{}}"
     
+    attr_accessor :view
+    
     attr_reader :element_id, :data_attrs
     def initialize(opts={})
       opts = Gnash.new(opts)
@@ -9,6 +11,10 @@ module Panorama
       self|(opts.delete(:id))
       self.data_attrs = opts 
     end  
+         
+    def proxy_buffer 
+      view ? view.proxy_buffer : []
+    end   
      
     def self.type
       @tag ||= self.to_s.downcase.gsub("panorama::", '').to_sym

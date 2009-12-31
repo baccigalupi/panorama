@@ -2,6 +2,10 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe Panorama do 
   describe 'default engine' do
+    before(:each) do 
+      Panorama.instance_variable_set("@engine_type", nil)
+    end
+      
     it 'should be of type :panorama' do
       Panorama.engine_type.should == :panorama
       Panorama.engine.should == Panorama::Engine::Default

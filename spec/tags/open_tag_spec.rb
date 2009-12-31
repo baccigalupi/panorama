@@ -46,15 +46,8 @@ describe Panorama::OpenTag  do
             'my crappy blog'
           end
           tag.render.should == "<a href=\"http://rubyghetto.com\">my crappy blog</a>"  
-        end
-        
-        it 'should render blocks with tag proxies' do 
-          tag = A.new(:href => 'http://rubyghetto.com') do
-            Panorama::Proxy.new(:type =>'img', :src => "http://rubyghetto.com/images/ruby_ghetto.gif")
-          end
-          tag.render.should == "<a href=\"http://rubyghetto.com\"><img src=\"http://rubyghetto.com/images/ruby_ghetto.gif\" /></a>"  
-        end     
-      end    
+        end 
+      end 
     end
     
     it 'should have a constant that holds calculated class names for all tags' do

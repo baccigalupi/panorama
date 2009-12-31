@@ -1,6 +1,7 @@
 lib = File.dirname(__FILE__) + '/panorama/'
 require lib + 'support/gnash'
 require lib + 'support/string'
+require lib + 'support/array'
 require lib + 'tag'
 require lib + 'tags/closed_tag'
 require lib + 'tags/open_tag'
