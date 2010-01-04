@@ -22,7 +22,7 @@ module Panorama
     
     attr_writer :output
     def output 
-      @output ||= []
+      @output ||= view ? view.output : []
     end
     
     def render(&blk)

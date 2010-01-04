@@ -61,7 +61,16 @@ describe Panorama::View do
           e.message.should match(/#{['x', 'y'].inspect}/) 
           e.message.should match(/#{['alpha'].inspect}/)
         end
-      end    
+      end
+      
+      it 'should initialize a pool object with #load' do
+        opts = {:x => 'x', :y => 'y'}
+        view = NeedyView.new(opts)
+        view.recycle
+        view = NeedyView.pool.get
+        view.load( opts )
+        view.locals.should == Gnash.new( opts )
+      end      
     end
     
     it 'locals should be accessible via the [] accessor' do

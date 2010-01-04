@@ -3,9 +3,20 @@ module Panorama
     attr_reader :locals 
     
     def initialize(opts={})
-      defaults = self.class.defaults
       @locals = Gnash.new( defaults.merge(opts) ) 
-      required = self.class.required
+      load( opts ) 
+    end
+    
+    def defaults
+      self.class.defaults
+    end 
+    
+    def required
+      self.class.required
+    end   
+    
+    def load( opts )
+      @locals.merge!(opts)
       if (keys = locals.keys) && required && !required.empty?
         missing = (required - keys)
         raise ArgumentError, "#{self.class} initialization requires additional variable(s): #{missing.inspect}" unless missing.empty?
@@ -13,8 +24,9 @@ module Panorama
           extra = keys - self.class.required
           raise ArgumentError, "#{self.class} initialization only takes the following variable(s): #{required.inspect}. Additional variables were passed in: #{extra.inspect}" unless extra.empty?
         end  
-      end  
-    end 
+      end
+    end  
+    
     
     def self.requires(*args)
       if args.last.class == Hash
@@ -81,7 +93,12 @@ module Panorama
     
     # Rendering --------------------------------
     def self.render(opts={})
-      view = self.pool.get || new(opts) 
+      view = self.pool.get 
+      if view
+        view.load(opts)
+      else  
+        view = new(opts)
+      end  
       output = view.render
       view.recycle
       output
@@ -108,7 +125,7 @@ module Panorama
       end    
     end 
     
-    def render_panorama
+    def render_panorama 
       clear_output
       markup 
       first_level = proxy_buffer.dump
