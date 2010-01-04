@@ -19,7 +19,7 @@ module Panorama
           opts.merge!(:type => type, :output => output, :view => self)
           new_args = [opts]
           new_args.unshift(content) if content
-          Proxy.new( *new_args, &blk )
+          TagProxy.new( *new_args, &blk )
         end  
       end
     end

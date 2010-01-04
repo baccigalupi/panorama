@@ -1,5 +1,5 @@
 module Panorama
-  class Proxy 
+  class TagProxy 
     attr_reader :tag, :view
     
     def initialize( *args, &blk ) 

@@ -7,7 +7,7 @@ describe "Tag Proxying"  do
 
   describe 'html view methods' do
     it 'should return a proxy' do
-      @view.p.class.should == Panorama::Proxy
+      @view.p.class.should == Panorama::TagProxy
     end
     
     it 'should build a tag' do  
@@ -33,20 +33,20 @@ describe "Tag Proxying"  do
   describe 'Proxy' do 
      describe 'initialization' do
       it 'insists on a valid tag type' do
-        lambda{ Panorama::Proxy.new('my text', :view => @view)}.should raise_error(
+        lambda{ Panorama::TagProxy.new('my text', :view => @view)}.should raise_error(
           ArgumentError, "Valid tag type required to generate a tag proxy. '' is not a valid tag type."
         )
       end
       
       it 'insists on proxy_buffer object' do
-        lambda{ Panorama::Proxy.new('my text', :type => 'em')}.should raise_error(
+        lambda{ Panorama::TagProxy.new('my text', :type => 'em')}.should raise_error(
           ArgumentError, "View with proxy_buffer required."
         )
       end      
     end
     
     it 'should have a tag' do
-      proxy = Panorama::Proxy.new(
+      proxy = Panorama::TagProxy.new(
         :type => 'em',
         :view => @view
       )  
@@ -54,7 +54,7 @@ describe "Tag Proxying"  do
     end
 
     it 'should add options to the tag' do
-      proxy = Panorama::Proxy.new(
+      proxy = Panorama::TagProxy.new(
         :type => 'em',
         :class => [:one, :two],
         :id => :my_id,
@@ -65,19 +65,19 @@ describe "Tag Proxying"  do
     end
     
     it 'should add blocks to the tag' do
-      proxy = Panorama::Proxy.new(:type => 'em', :view => @view ) {"my text"}
+      proxy = Panorama::TagProxy.new(:type => 'em', :view => @view ) {"my text"}
       proxy.tag.content.class.should == Proc
       proxy.tag.content.call.should == "my text"
     end 
     
     it 'should receive a content string as the first argument' do 
-      proxy = Panorama::Proxy.new('my text', :type => 'em', :view => @view )
+      proxy = Panorama::TagProxy.new('my text', :type => 'em', :view => @view )
       proxy.tag.content.should == 'my text'
     end
     
     describe 'rendering' do
       it 'should delegate render to the tag' do 
-        proxy = Panorama::Proxy.new('my text', :type => 'em', :view => @view)
+        proxy = Panorama::TagProxy.new('my text', :type => 'em', :view => @view)
         proxy.render.should == [proxy.tag.render]
       end 
     end   
