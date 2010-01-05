@@ -1,0 +1,20 @@
+indentation 
+better locals
+  - accessors
+  - exceptions for local name overlaps with html tags
+pages
+  - different convenience tag proxy methods for head content
+  - proxy for inline rendering
+partials
+  - erb and haml proxies should receive file objects as content
+  - partial( file or dir )
+  - partial(:erb, file or dir) as different syntax for erb( file or dir )
+publishing:
+  - css and sass to an external file
+  - js to an external file
+  - external files should warn and indicate where they came from
+  - pages can inline these files, or they can be published to a public location and html included   
+sass 
+mustache ??
+  
+  
