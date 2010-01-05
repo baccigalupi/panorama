@@ -9,7 +9,7 @@ module Panorama
     end 
     
     def render(buffer = output)
-      buffer << engine.render( content, {:scope => view})
+      buffer << engine.render( content, {:scope => view} )
     end 
   end
 end  

@@ -12,7 +12,15 @@ module Panorama
             proxy
           end
         " 
-      end
+      end 
+      
+      [:haml, :erb].each do |engine_type|
+        module_eval "
+          def #{engine_type}( content )
+            build_engine_proxy( content, :#{engine_type} )
+          end
+        "
+      end  
       
       def build_tag_proxy( type, *args, &blk )
         content = args.first.is_a?( String ) ? args.shift  : nil  
@@ -21,15 +29,13 @@ module Panorama
         new_args = [opts]
         new_args.unshift(content) if content
         TagProxy.new( *new_args, &blk )
-      end
+      end 
       
-      def haml( content )
-        EngineProxy.new( content, {:type => :haml, :view => self})
-      end
-      
-      def erb( content )
-        EngineProxy.new( content, {:type => :erb, :view => self})
-      end    
+      def build_engine_proxy( content, type )
+        proxy = EngineProxy.new( content, {:type => type, :view => self})
+        proxy_buffer << proxy
+        proxy
+      end  
     end
   end
 end    

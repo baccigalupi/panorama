@@ -131,10 +131,40 @@ describe Panorama::View do
     end 
     
     describe 'engine proxies' do
+      class Hamler < Panorama::View
+        engine_type :panorama 
+        def haml_method
+          'haml'
+        end
+        
+        def markup
+          h1 "heading and"
+          haml "= haml_method" 
+        end  
+      end
+      
+      class Erber < Panorama::View 
+        engine_type :panorama 
+        def erb_method
+          'erb'
+        end
+          
+        def markup
+          h1 "heading and"
+          erb "<p><%= erb_method %></p>" 
+        end
+      end  
+        
       [:haml, :erb].each do |method| 
         it "should have a proxy for ##{method}" do 
           view = Panorama::View.new
           view.should respond_to(method)
+        end
+        
+        it 'should render via a proxy' do 
+          klass = (method.to_s.camelize + 'er').constantize
+          renderings = klass.render  
+          renderings[1].should include method.to_s
         end  
       end  
     end  

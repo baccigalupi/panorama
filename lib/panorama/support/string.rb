@@ -114,6 +114,10 @@ unless defined?( ActiveSupport ) || defined?( Extlib )
       Extlib::Inflection.underscore( self )
     end
     
+    def camelize
+      Extlib::Inflection.camelize( self )
+    end
+    
     def classify
       Extlib::Inflection.classify( self )
     end    
