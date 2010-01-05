@@ -1,6 +1,6 @@
 module Panorama
   module HasEngine
-     def default_engine_type 
+    def default_engine_type 
       :panorama
     end
     

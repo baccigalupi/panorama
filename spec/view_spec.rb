@@ -128,7 +128,16 @@ describe Panorama::View do
       Panorama::View.stub!(:pool).and_return( pool )
       pool.should_receive(:get).and_return( view)
       Panorama::View.render
-    end
+    end 
+    
+    describe 'engine proxies' do
+      [:haml, :erb].each do |method| 
+        it "should have a proxy for ##{method}" do 
+          view = Panorama::View.new
+          view.should respond_to(method)
+        end  
+      end  
+    end  
   end
   
   describe 'pooling' do

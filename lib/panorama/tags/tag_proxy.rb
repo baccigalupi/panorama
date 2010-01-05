@@ -14,14 +14,5 @@ module Panorama
     def render(buffer = output)
       buffer << tag.render
     end 
-    
-    def output
-      view.output
-    end  
-    
-    def proxy_buffer
-      view.proxy_buffer
-    end  
-      
   end 
 end      
