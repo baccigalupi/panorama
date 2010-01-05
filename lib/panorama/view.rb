@@ -117,17 +117,17 @@ module Panorama
       self.class.engine_type
     end    
      
-    def render
+    def render(meth=:markup)
       if engine_type == :panorama
-        render_panorama
+        render_panorama(meth)
       else
-        render_external
+        render_external(meth)
       end    
     end 
     
-    def render_panorama 
+    def render_panorama(meth) 
       clear_output
-      markup 
+      send(meth) 
       first_level = proxy_buffer.dump
       first_level.map{|proxy| proxy.render}.flatten
     end
@@ -145,9 +145,9 @@ module Panorama
       @proxy_buffer ||= []
     end  
     
-    def render_external 
+    def render_external(meth) 
       opts = locals.merge(:scope => self)
-      self.class.engine.render(markup, opts)
+      self.class.engine.render(send(meth), opts)
     end  
     
     include Engine::HtmlMethods      

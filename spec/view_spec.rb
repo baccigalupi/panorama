@@ -128,7 +128,18 @@ describe Panorama::View do
       Panorama::View.stub!(:pool).and_return( pool )
       pool.should_receive(:get).and_return( view)
       Panorama::View.render
-    end 
+    end
+    
+    it 'should render methods other than #markup' do
+      class AltMark < Panorama::View 
+        engine_type :panorama 
+        def alt_markup
+          p "I am alternative markup"
+        end
+      end  
+      view = AltMark.new
+      view.render(:alt_markup).first.should include('<p>', 'alternative') 
+    end   
     
     describe 'engine proxies' do
       class Hamler < Panorama::View
