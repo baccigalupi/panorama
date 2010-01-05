@@ -1,14 +1,9 @@
 module Panorama
-  class TagProxy 
-    attr_reader :tag, :view
+  class TagProxy < Proxy
+    attr_reader :tag
     
     def initialize( *args, &blk ) 
-      content = args.shift if args.first.is_a?( String )
-      opts = Gnash.new( args.shift ) 
-      type = opts.delete(:type)
-      @view = opts.delete(:view)
-      raise ArgumentError, "View with proxy_buffer required." unless view && proxy_buffer
-      @output = opts.delete(:output)
+      super( *args )
       @tag = "Panorama::#{type.upcase}".constantize.new(opts, &blk) if type
       raise ArgumentError, 
         "Valid tag type required to generate a tag proxy. '#{type}' is not a valid tag type." unless @tag

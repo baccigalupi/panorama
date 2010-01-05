@@ -3,7 +3,14 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Tag Proxying"  do 
   before do 
     @view = Panorama::View.new
-  end  
+  end
+  
+  describe 'superclass' do 
+    it 'should take initialize with content and an opts hash' do
+      proxy = Panorama::Proxy.new('my content', :type => 'em', :view => @view) 
+      proxy.content.should == 'my content'
+    end  
+  end    
 
   describe 'html view methods' do
     it 'should return a proxy' do
