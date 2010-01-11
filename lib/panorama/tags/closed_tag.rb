@@ -8,7 +8,8 @@ module Panorama
       @tail ||= " />"
     end 
       
-    def render 
+    def render(level=nil) 
+      super(level)
       output = head
       output << tail
       output

@@ -101,19 +101,60 @@ describe "Default Views" do
   
   describe 'rendering' do 
     it 'should render first level tag proxies' do
-      SimpleTag.render.should == ["<p>simple tag</p>"]
+      SimpleTag.render.first.should match(/<p>simple tag<\/p>/)
     end 
     
     it 'should render first level tag proxies with blocks' do 
-      BlockWithString.render.should == ["<p>block with string</p>"]
+      BlockWithString.render.should match(/<p>block with string<\/p>/)
     end
     
     it 'should render a second level nested proxy' do
-      BlockWithTag.render.should == ["<p><b>block with tag</b></p>"]
+      BlockWithTag.render.first.should match(/<p>\s?<b>block with tag<\/b>\s?<\/p>/)
     end     
         
     it 'should render nested proxies' do 
-      NestedBlock.render.should == ["<p><a href=\"http://rubyghetto.com\"><h1>Ruby Ghetto</h1><img src=\"http://rubyghetto.com/images/ruby_ghetto.gif\" /></a></p>"]
+      NestedBlock.render.first.should match(
+        /<p>\s?<a href="http:\/\/rubyghetto.com"\>\s?<h1>Ruby Ghetto<\/h1>\s?<img src="http:\/\/rubyghetto.com\/images\/ruby_ghetto.gif" \/>\s?<\/a>\s?<\/p>/
+      )
     end      
-  end   
+  end 
+  
+  describe 'indentation' do
+    describe 'levels' do
+      before do 
+        @str =  Panorama.indentation_string 
+      end
+        
+      it 'should not indent first level tags' do 
+        SimpleTag.render.first.should match(/^<p>\n?simple tag\n?<\/p>\s?$/)
+      end
+      
+      it 'should indent second level tags' do 
+        BlockWithTag.render.first.should == 
+"<p>
+  <b>
+    block with tag
+   </b>
+</p>
+"        
+        
+        # match(
+        #   /\A<p>\n?#{@str}<b>\n?#{@str*2}block with tag\n?#{@str}<\/b>\n?<\/p>\z/
+        # )  
+      end
+      
+      it 'should indent nested tags to an appropriate level' do  
+        NestedBlock.render.first.should match(
+          /\A<p>#{@str}<a href="http:\/\/rubyghetto.com"\>#{@str*2}<h1>Ruby Ghetto<\/h1>#{@str*2}<img src="http:\/\/rubyghetto.com\/images\/ruby_ghetto.gif" \/>\s?<\/a>\s?<\/p>\z/
+        )  
+      end
+    end  
+    
+    describe 'line breaks' do    
+      it 'should add a new line after each tag' do
+        SimpleTag.render.first.should match(/^<p>\nsimple tag\n<\/p>\n$/) 
+        BlockWithTag.render.first.should match(/\A<p>\n\s?<b>\nblock with tag<\/b>\n?<\/p>\z/)
+      end   
+    end  
+  end    
 end

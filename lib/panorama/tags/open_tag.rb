@@ -1,11 +1,11 @@
 module Panorama
   class OpenTag < Tag
-    attr_accessor :content 
+    attr_accessor :content, :rendered_content 
     
     def initialize(opts={}, &blk) 
       super(opts)
       self.content = blk
-     end  
+    end  
     
     def self.head
       @head ||= "<#{type}#{SUBSTITUTION_STRING}>" 
@@ -25,32 +25,48 @@ module Panorama
       @output ||= view ? view.output : []
     end
     
-    def render(&blk)
-      self.output = head 
-      
+    def render(level=nil, &blk)
+      super(level)
       self.content = blk if block_given? 
-      middle # renders to output itself!
+      render_content
       
+      self.output = head 
+      middle # renders to output itself!
       self.output << tail
       output
-    end  
-    
-    def render_content
-      content.is_a?(Proc) ? content.call : content
     end
     
+    def tail
+      "#{has_content? ? "\n" : ""}#{indentation}#{super}"
+    end    
+    
+    def render_content
+      @has_content = nil
+      @rendered_content = content.is_a?(Proc) ? content.call : content
+    end
+    
+    def has_content?
+      @has_content ||= rendered_content && (
+        (rendered_content.class == String && !rendered_content.empty?) ||
+        (rendered_content.is_a? Panorama::Proxy)
+      )
+    end  
+    
+    def content_indentation
+      Panorama.indentation(indentation_level+1)
+    end  
+    
     def middle
-      returned_content = content ? render_content : '' 
-      buffer = proxy_buffer.dump
-      if buffer.empty? 
-        output << returned_content
+      buffer = proxy_buffer.dump 
+      if buffer.empty?
+        output << "\n#{content_indentation}#{rendered_content}" if has_content?
       else
-        buffer.map{|proxy| proxy.render(output)}
+        buffer.map{|proxy| proxy.render(output, indentation_level+1 )}
       end
     end
     
     def inspect
-      "#<#{self.class} #{head}#{content.is_a?(String) ? content : '{block}'}#{tail} >"
+      "#<#{self.class} #{head}#{content.is_a?(String) ? content : '{block}'}#{tail.gsub(/\s/, '')} >"
     end    
 
     METHOD_NAMES = [

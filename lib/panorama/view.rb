@@ -1,5 +1,5 @@
 module Panorama
-  class View
+  class View 
     attr_reader :locals 
     
     def initialize(opts={})
@@ -150,6 +150,10 @@ module Panorama
       self.class.engine.render(send(meth), opts)
     end  
     
-    include Engine::HtmlMethods      
+    include Engine::HtmlMethods 
+    
+    def indentation( times )
+      Panorama.indentation( times )
+    end      
   end
 end    

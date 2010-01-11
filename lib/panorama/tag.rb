@@ -3,15 +3,17 @@ module Panorama
     SUBSTITUTION_STRING = "{{}}"
     
     attr_accessor :view
+    attr_reader :indentation_level
     
     attr_reader :element_id, :data_attrs
     def initialize(opts={})
       opts = Gnash.new(opts)
+      @indentation_level = opts.delete(:indentation_level) || 0
       self*(opts.delete(:class))
       self|(opts.delete(:id))
       self.data_attrs = opts 
     end  
-         
+    
     def proxy_buffer 
       view ? view.proxy_buffer : []
     end   
@@ -75,12 +77,20 @@ module Panorama
     end 
     
     # Rendering: Used by subclasses ----------
-        def head( str=attribute_string )
-      self.class.head.gsub( SUBSTITUTION_STRING, str )
+    def render(level)
+      @indentation_level = level if level
+    end  
+    
+    def indentation
+      Panorama.indentation(indentation_level)
+    end  
+    
+    def head( str=attribute_string )
+      indentation + self.class.head.gsub( SUBSTITUTION_STRING, str )
     end
     
     def tail
-      self.class.tail
+      self.class.tail + "\n"
     end 
     
     def attribute_string 

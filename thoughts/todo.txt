@@ -7,14 +7,19 @@ pages
   - proxy for inline rendering
 partials
   - erb and haml proxies should receive file objects as content
-  - partial( file or dir )
-  - partial(:erb, file or dir) as different syntax for erb( file or dir )
+  - partial( file object or dir string )
+  - partial(:erb, file object or dir string) as different syntax for erb( file or dir )
 publishing:
   - css and sass to an external file
   - js to an external file
   - external files should warn and indicate where they came from
   - pages can inline these files, or they can be published to a public location and html included   
-sass 
-mustache ??
+Engines
+  sass 
+  mustache ?? 
+Caching 
+  via moneta
+  via Rails
+  
   
   

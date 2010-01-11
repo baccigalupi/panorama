@@ -11,8 +11,8 @@ module Panorama
       @tag.view = self.view
     end
     
-    def render(buffer = output)
-      buffer << tag.render
+    def render(buffer = output, level = 0)
+      buffer << tag.render(level)
     end 
   end 
 end      

@@ -1,6 +1,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe Panorama::ClosedTag  do 
+describe Panorama::ClosedTag  do
+  before(:all) do
+    Panorama.instance_variable_set("@indentation_string", nil)
+  end
+   
   describe 'rendering' do
     before(:each) do
       class HR < Panorama::ClosedTag
@@ -8,22 +12,38 @@ describe Panorama::ClosedTag  do
       @tag = HR.new
     end  
     it 'should be self closing html' do 
-      @tag.render.should == "<hr />"
+      @tag.render.should include "<hr />"
     end
     
     it 'should include classes' do
       @tag * [:red, :shadowed]
-      @tag.render.should == "<hr class=\"red shadowed\" />"
+      @tag.render.should include "<hr class=\"red shadowed\" />"
     end
     
     it 'should include the id' do
       @tag[:my_id] 
-      @tag.render.should == "<hr id=\"my_id\" />"
+      @tag.render.should include "<hr id=\"my_id\" />"
     end
     
     it 'should include other data attributes' do   
-      HR.new(:this => 'that').render.should == "<hr this=\"that\" />"
+      HR.new(:this => 'that').render.should include "<hr this=\"that\" />"
     end       
+  
+    describe 'indentation' do
+      it 'should prepend no indentation if the indentation level is 0' do  
+        @tag.render.should match /\A<hr \/>/
+      end  
+      
+      it 'should prepend an indentation for first level indents' do
+        tag = HR.new(:indentation_level => 1)
+        tag.render.should match /\A  <hr \/>/ 
+      end 
+       
+      it 'should prepend indentations for deeper levels' do  
+        tag = HR.new(:indentation_level => 5)
+        tag.render.should match /\A          <hr \/>/
+      end  
+    end  
   end  
   
   it 'should have a constant that holds calculated class names for all tags' do

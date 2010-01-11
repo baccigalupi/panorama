@@ -23,5 +23,20 @@ describe Panorama do
     it 'should raise an error when assigning to unknown engine' do 
       lambda { Panorama.engine_type = :goofy }.should raise_error(ArgumentError, "Rendering engine :#{:goofy} unknown")
     end 
-  end   
+  end
+  
+  describe 'default indentation string' do 
+    before(:each) do
+      Panorama.instance_variable_set("@indentation_string", nil)
+    end
+    
+    it 'should be 2 spaces by default' do
+      Panorama.indentation_string.should == "  "
+    end
+      
+    it 'should be customizable' do 
+      Panorama.indentation_string( "\t" )
+      Panorama.indentation_string.should == "\t"
+    end    
+  end     
 end        

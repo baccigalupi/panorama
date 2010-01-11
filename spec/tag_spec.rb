@@ -110,4 +110,17 @@ describe Panorama::Tag  do
       tag.attributes[:this].should == 'that'
     end      
   end     
+
+  describe 'indentation' do 
+    it 'the default level is 0' do 
+      tag = Panorama::Tag.new
+      tag.indentation_level.should == 0
+    end 
+      
+    it 'can be initialized with a indentation level' do 
+      tag = Panorama::Tag.new(:indentation_level => 3)
+      tag.indentation_level.should == 3
+      tag.attributes.keys.should_not include 'indentation_level'
+    end 
+  end  
 end

@@ -9,6 +9,7 @@ require lib + 'tags/proxy'
 require lib + 'tags/tag_proxy' 
 require lib + 'tags/engine_proxy' 
 require lib + 'has_engine'
+require lib + 'has_indentation'
 require lib + 'pool'
 require lib + 'engine'
 require lib + 'engines/haml'
@@ -23,4 +24,5 @@ module Panorama
   }
   
   extend HasEngine
+  extend HasIndentation
 end  
