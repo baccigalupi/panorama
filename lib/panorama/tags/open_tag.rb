@@ -25,19 +25,24 @@ module Panorama
       @output ||= view ? view.output : []
     end
     
+    require 'cgi'
     def render(level=nil, &blk)
       super(level)
       self.content = blk if block_given? 
       render_content
       
       self.output = head 
-      middle # renders to output itself!
+      middle # renders to output itself! 
       self.output << tail
       output
     end
     
+    def head
+      "#{super}#{has_content? ? "\n" : ""}"
+    end  
+    
     def tail
-      "#{has_content? ? "\n" : ""}#{indentation}#{super}"
+      "#{has_content? ? indentation : ""}#{super}"
     end    
     
     def render_content
@@ -59,7 +64,7 @@ module Panorama
     def middle
       buffer = proxy_buffer.dump 
       if buffer.empty?
-        output << "\n#{content_indentation}#{rendered_content}" if has_content?
+        output << "#{content_indentation}#{rendered_content}\n" if has_content?
       else
         buffer.map{|proxy| proxy.render(output, indentation_level+1 )}
       end
