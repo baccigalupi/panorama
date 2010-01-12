@@ -12,7 +12,6 @@ module Panorama
     
     def indentation( times )
       indentation_string * times
-    end  
-      
+    end     
   end
 end 

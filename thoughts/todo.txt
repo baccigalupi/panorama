@@ -1,7 +1,8 @@
-indentation 
 better locals
   - accessors
   - exceptions for local name overlaps with html tags
+content escaping
+  h tag and auto escape of normal content
 pages
   - different convenience tag proxy methods for head content
   - proxy for inline rendering
@@ -14,12 +15,12 @@ publishing:
   - js to an external file
   - external files should warn and indicate where they came from
   - pages can inline these files, or they can be published to a public location and html included   
-Engines
+engines
   sass 
   mustache ?? 
-Caching 
+caching 
   via moneta
-  via Rails
+  via Rails internals
   
   
   

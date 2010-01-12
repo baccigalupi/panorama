@@ -15,6 +15,7 @@ require lib + 'engine'
 require lib + 'engines/haml'
 require lib + 'engines/erb'
 require lib + 'view'
+require lib + 'page'
 
 module Panorama 
   AVAILABLE_ENGINES =  {

@@ -10,9 +10,13 @@ module Panorama
       opts = Gnash.new(opts)
       @indentation_level = opts.delete(:indentation_level) || 0
       self*(opts.delete(:class))
-      self|(opts.delete(:id))
-      self.data_attrs = opts 
-    end  
+      self|(opts.delete(:id)) 
+      self.data_attrs = default_attrs.merge( opts ) 
+    end 
+    
+    def default_attrs
+      Gnash.new
+    end   
     
     def proxy_buffer 
       view ? view.proxy_buffer : []
@@ -85,7 +89,8 @@ module Panorama
       Panorama.indentation(indentation_level)
     end  
     
-    def head( str=attribute_string )
+    def head( str=attribute_string ) 
+      puts indentation
       indentation + self.class.head.gsub( SUBSTITUTION_STRING, str )
     end
     

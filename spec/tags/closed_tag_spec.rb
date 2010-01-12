@@ -52,5 +52,20 @@ describe Panorama::ClosedTag  do
   
   it 'should generate subclasses' do  
     lambda{ Panorama::BR.new }.should_not raise_error
-  end  
+  end
+  
+  describe 'special tags' do 
+    it 'xml should default to version 1.0 utf' do
+      tag = Panorama::XML.new.render
+      tag.should match /\A<\?xml [^\>\?]*\?>\n\z/
+      tag.should include "version=\"1.0\""
+      tag.should include "encoding=\"utf-8\""
+    end
+    
+    describe 'doctype' do
+      it 'should default to xhtml transitional' do
+        Panorama::Doctype.new.render.should == "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+      end  
+    end    
+  end    
 end 
