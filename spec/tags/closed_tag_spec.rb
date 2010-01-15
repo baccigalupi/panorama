@@ -63,9 +63,26 @@ describe Panorama::ClosedTag  do
     end
     
     describe 'doctype' do
-      it 'should default to xhtml transitional' do
-        Panorama::Doctype.new.render.should == "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+      describe 'html' do
+        Panorama::Doctype::HTML_TYPES.each do |html_type, attrs| 
+          it "should construct #{html_type}" do
+            attrs.each do |attr|
+              Panorama::Doctype.new(:html => html_type).render.should match(Regexp.new(attr)) 
+            end  
+          end  
+        end  
       end  
+      
+      describe 'xhtml' do
+        Panorama::Doctype::XHTML_TYPES.each do |html_type, attrs|
+          it "should construct #{html_type}" do 
+            attrs.each do |attr|
+              Panorama::Doctype.new(html_type).render.should match(Regexp.new(attr)) 
+            end  
+          end  
+        end
+      end   
+           
     end    
   end    
 end 

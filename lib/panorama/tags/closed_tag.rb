@@ -64,12 +64,12 @@ module Panorama
     attr_reader :xhtml, :flavor
     
     def initialize( *args ) 
-      type = args.shift 
-      if type.is_a?( Hash )
-        @xhtml = true if ['xhtml', :xhtml].include?( type.keys.first )
+      type = args.shift
+      @xhtml = true
+      if type.is_a?( Hash ) 
+        @xhtml = false if ['html', :html].include?( type.keys.first ) 
         @flavor = type.values.first.to_sym
       else
-        @xhtml = true
         @flavor = (type || :transitional).to_sym 
       end
       super({})    
@@ -81,10 +81,16 @@ module Panorama
      
     def self.head
       @head ||= "<!DOCTYPE html #{SUBSTITUTION_STRING}"
-    end
+    end 
+    
+    def attrs
+      str = TYPE_CASTING[xhtml][flavor]
+      str = str ? str.join('" "') : ''
+      str.empty? ? str : " \"#{str}\""
+    end  
     
     def head 
-      super( "#{public_declaration} \"#{TYPE_CASTING[xhtml][flavor].join('" "')}\"" )
+      super( "#{public_declaration}#{attrs}" )
     end  
     
     def self.tail
