@@ -1,49 +1,86 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe Panorama::Page do
+  before(:each) do
+    MyLayout.clear_html_opts
+  end  
   
   class MyLayout < Panorama::Page
   end   
   
   describe 'special tags' do
-    # 'head', 'html', 'title', 'link', 'body'
-    describe 'class level:' do
-      describe 'html' do
+    # 'head', 'html', 'title', 'link', 'body' 
+    
+    describe 'html declaration' do
+      describe 'default' do 
         it 'should build an xml opening tag by default' do 
-          pending
-          MyLayout.render.first.should match /\A<\?xml version=\"1.0\" encoding=\"utf-8\" \?>/
-        end
-          
-        it 'should build a xhtml transitional doctype tag by default'
-        it 'should take an encoding option'
-        describe ':xhtml' do 
-          it 'should have the xml tag in the first line'
-          {  
-            :strict => ["-//W3C//DTD XHTML 1.0 Strict//EN", "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"], 
-            :frameset => ["-//W3C//DTD XHTML 1.0 Frameset//EN", "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd"],
-            '1.1' => ["-//W3C//DTD XHTML 1.1//EN", "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"],
-            :basic => ["-//W3C//DTD XHTML Basic 1.1//EN", "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd"],
-            :mobile => ["-//WAPFORUM//DTD XHTML Mobile 1.2//EN", "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd"]
-          }.each do |html_option, contents|
-            it "#{html_option.inspect} should build a tag proxy for document type"
-            it "#{html_option.inspect}'s proxy should render the content"
-          end  
+          MyLayout.render.first.should match /<\?xml encoding=\"utf-8\" version=\"1.0\" \?>/
         end
         
-        describe ':html4' do 
-          {
-            :transitional => ["-//W3C//DTD HTML 4.01 Transitional//EN", "http://www.w3.org/TR/html4/loose.dtd"],
-            :strict => ["-//W3C//DTD HTML 4.01//EN", "http://www.w3.org/TR/html4/strict.dtd"],
-            :frameset => ["-//W3C//DTD HTML 4.01 Frameset//EN", "http://www.w3.org/TR/html4/frameset.dtd"]
-          }.each do |html_option, contents|
-            it "#{html_option.inspect} should build a tag proxy for docmuent type"
-            it "#{html_option.inspect}'s proxy should render the content"
-          end  
-        end
-        
-        it ':html5 should build a tag proxy for document type'
-        it ':html5\'s proxy should render the content'     
+        it 'should build a xhtml transitional doctype tag by default' do
+          MyLayout.render[1].should match /<!DOCTYPE.*XHTML 1.0 Transitional/
+        end      
       end
+      
+      describe 'customization' do 
+        it 'should render custom xml options' do
+          MyLayout.html :strict, :encoding => 'asci'
+          MyLayout.render.first.should match /<\?xml encoding=\"asci\" version=\"1.0\" \?>/ 
+        end  
+      end  
+    end  
+      
+    describe 'class level xml and doctype opts' do
+      it '#xml? should be true by default' do
+        MyLayout.xml?.should == true
+      end
+      
+      it '#xml_options should be an empty hash by default' do
+        MyLayout.xml_options.should == Gnash.new({})
+      end
+      
+      it '#html should set xml encoding options' do 
+        MyLayout.html :encoding => 'fr'
+        MyLayout.xml_options.should == Gnash.new({:encoding => 'fr'})
+      end
+      
+      it '#html should set xml version options' do 
+        MyLayout.html :version => 1.1
+        MyLayout.xml_options.should == Gnash.new({:version => 1.1})
+      end
+      
+      it '#html should not pass version or encoding down to doctype options' do 
+        MyLayout.html :version => '1.1', :encoding => 'fr'
+        MyLayout.xml_options.should == Gnash.new({:version => '1.1', :encoding => 'fr'}) 
+        MyLayout.doctype_options.should == [Gnash.new({})]
+      end
+      
+      it '#xml? should be true if the first argument received by #html is a string or symbol' do 
+        MyLayout.html :strict
+        MyLayout.xml?.should == true
+        MyLayout.html 'transitional'
+        MyLayout.xml?.should == true
+      end 
+      
+      it '#xml? should be false if :html is a key in the hash' do 
+        MyLayout.html :html => :transitional
+        MyLayout.xml?.should == false
+      end 
+      
+      it '#xml? should be true when :xhtml is a key in the hash' do
+        MyLayout.html :xhtml => :strict
+        MyLayout.xml?.should == true
+      end 
+      
+      it '#html should pass hash options down into the doctype options' do 
+        MyLayout.html :html => :transitional
+        MyLayout.doctype_options.first[:html].should == :transitional
+      end
+      
+      it '#html should pass string/symbol arguments down to the doctype options' do
+        MyLayout.html :strict
+        MyLayout.doctype_options.should == [:strict, Gnash.new]
+      end             
     end  
     
     describe 'head' do
@@ -66,7 +103,5 @@ describe Panorama::Page do
       it '#meta_equiv should make a meta http-equiv tag'
     end       
   end  
-    
    
-
 end  

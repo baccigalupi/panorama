@@ -2,8 +2,8 @@ module Panorama
   class TagProxy < Proxy
     attr_reader :tag
     
-    def initialize( *args, &blk ) 
-      super( *args )
+    def initialize( args, &blk ) 
+      super( args )
       @tag = "Panorama::#{type.upcase}".constantize.new(opts, &blk) if type
       raise ArgumentError, 
         "Valid tag type required to generate a tag proxy. '#{type}' is not a valid tag type." unless @tag

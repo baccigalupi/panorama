@@ -1,18 +1,22 @@
 module Panorama
   module Engine
     class Default
-    end
+    end  
     
     module HtmlMethods
       (ClosedTag::METHOD_NAMES + OpenTag::METHOD_NAMES).each do |method_name|
         module_eval "
           def #{method_name}( *args, &blk )
-            proxy = build_tag_proxy( '#{method_name}', *args, &blk )
-            proxy_buffer << proxy
-            proxy
+            add_proxy_to_buffer( '#{method_name}', *args, &blk )
           end
         " 
       end 
+      
+      def add_proxy_to_buffer( tag_type, *args, &blk ) 
+        proxy = build_tag_proxy( tag_type, *args, &blk )
+        proxy_buffer << proxy
+        proxy
+      end  
       
       [:haml, :erb].each do |engine_type|
         module_eval "
@@ -23,19 +27,28 @@ module Panorama
       end  
       
       def build_tag_proxy( type, *args, &blk )
-        content = args.first.is_a?( String ) ? args.shift  : nil  
+        content = [String, Symbol].include?(args.first.class) ? args.shift  : nil 
         opts = args.first || Gnash.new
-        opts.merge!(:type => type, :view => self)
-        new_args = [opts]
-        new_args.unshift(content) if content
-        TagProxy.new( *new_args, &blk )
+        opts.merge!(:type => type, :view => self, :content => content)
+        TagProxy.new( opts, &blk )
       end 
       
       def build_engine_proxy( content, type )
-        proxy = EngineProxy.new( content, {:type => type, :view => self})
+        proxy = EngineProxy.new( {:content => content, :type => type, :view => self})
         proxy_buffer << proxy
         proxy
-      end  
+      end    
     end
+    
+    module PageHtmlMethods 
+      ['xml', 'doctype'].each do |method_name|
+        module_eval "
+          def #{method_name}( *args, &blk )
+            add_proxy_to_buffer( '#{method_name}', *args, &blk )
+          end
+        "  
+      end
+    end
+      
   end
 end    

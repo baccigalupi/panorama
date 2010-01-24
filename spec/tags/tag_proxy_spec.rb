@@ -6,8 +6,8 @@ describe "Tag Proxying"  do
   end
   
   describe 'superclass' do 
-    it 'should take initialize with content and an opts hash' do
-      proxy = Panorama::Proxy.new('my content', :type => 'em', :view => @view) 
+    it 'should take initialize an opts hash' do
+      proxy = Panorama::Proxy.new(:content => 'my content', :type => 'em', :view => @view) 
       proxy.content.should == 'my content'
     end  
   end    
@@ -40,13 +40,13 @@ describe "Tag Proxying"  do
   describe 'Proxy' do 
      describe 'initialization' do
       it 'insists on a valid tag type' do
-        lambda{ Panorama::TagProxy.new('my text', :view => @view)}.should raise_error(
+        lambda{ Panorama::TagProxy.new(:contet => 'my text', :view => @view)}.should raise_error(
           ArgumentError, "Valid tag type required to generate a tag proxy. '' is not a valid tag type."
         )
       end
       
       it 'insists on proxy_buffer object' do
-        lambda{ Panorama::TagProxy.new('my text', :type => 'em')}.should raise_error(
+        lambda{ Panorama::TagProxy.new(:content => 'my text', :type => 'em')}.should raise_error(
           ArgumentError, "View with proxy_buffer required."
         )
       end      
@@ -78,13 +78,13 @@ describe "Tag Proxying"  do
     end 
     
     it 'should receive a content string as the first argument' do 
-      proxy = Panorama::TagProxy.new('my text', :type => 'em', :view => @view )
+      proxy = Panorama::TagProxy.new(:content => 'my text', :type => 'em', :view => @view )
       proxy.tag.content.should == 'my text'
     end
     
     describe 'rendering' do
       it 'should delegate render to the tag' do 
-        proxy = Panorama::TagProxy.new('my text', :type => 'em', :view => @view)
+        proxy = Panorama::TagProxy.new(:content => 'my text', :type => 'em', :view => @view)
         proxy.render.should == [proxy.tag.render]
       end 
     end   

@@ -64,20 +64,20 @@ describe Panorama::ClosedTag  do
     
     describe 'doctype' do
       describe 'html' do
-        Panorama::Doctype::HTML_TYPES.each do |html_type, attrs| 
+        Panorama::DOCTYPE::HTML_TYPES.each do |html_type, attrs| 
           it "should construct #{html_type}" do
             attrs.each do |attr|
-              Panorama::Doctype.new(:html => html_type).render.should match(Regexp.new(attr)) 
+              Panorama::DOCTYPE.new(:html => html_type).render.should match(Regexp.new(attr)) 
             end  
           end  
         end  
       end  
       
       describe 'xhtml' do
-        Panorama::Doctype::XHTML_TYPES.each do |html_type, attrs|
+        Panorama::DOCTYPE::XHTML_TYPES.each do |html_type, attrs|
           it "should construct #{html_type}" do 
             attrs.each do |attr|
-              Panorama::Doctype.new(html_type).render.should match(Regexp.new(attr)) 
+              Panorama::DOCTYPE.new(html_type).render.should match(Regexp.new(attr)) 
             end  
           end  
         end
