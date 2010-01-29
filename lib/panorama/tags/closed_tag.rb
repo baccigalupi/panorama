@@ -68,7 +68,6 @@ module Panorama
       @xhtml = true
       if type.is_a?( Hash ) 
         @xhtml = false if ['html', :html].include?( type.keys.first ) 
-        puts @xhtml
         @flavor = (type.values.first || :transitional).to_sym
       else
         @flavor = (type || :transitional).to_sym 

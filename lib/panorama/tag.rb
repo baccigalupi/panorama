@@ -90,7 +90,6 @@ module Panorama
     end  
     
     def head( str=attribute_string ) 
-      puts indentation
       indentation + self.class.head.gsub( SUBSTITUTION_STRING, str )
     end
     

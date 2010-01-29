@@ -7,7 +7,11 @@ module Panorama
       @tag = "Panorama::#{type.upcase}".constantize.new(opts, &blk) if type
       raise ArgumentError, 
         "Valid tag type required to generate a tag proxy. '#{type}' is not a valid tag type." unless @tag
-      @tag.content = content if @tag && content && !@tag.content
+      if @tag.is_a?(OpenTag)
+        @tag.content = content if @tag && content && !@tag.content 
+      else
+        
+      end    
       @tag.view = self.view
     end
     

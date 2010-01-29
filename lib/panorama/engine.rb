@@ -7,12 +7,12 @@ module Panorama
       (ClosedTag::METHOD_NAMES + OpenTag::METHOD_NAMES).each do |method_name|
         module_eval "
           def #{method_name}( *args, &blk )
-            add_proxy_to_buffer( '#{method_name}', *args, &blk )
+            add_tag_proxy_to_buffer( '#{method_name}', *args, &blk )
           end
         " 
       end 
       
-      def add_proxy_to_buffer( tag_type, *args, &blk ) 
+      def add_tag_proxy_to_buffer( tag_type, *args, &blk ) 
         proxy = build_tag_proxy( tag_type, *args, &blk )
         proxy_buffer << proxy
         proxy
@@ -34,7 +34,7 @@ module Panorama
       end 
       
       def build_engine_proxy( content, type )
-        proxy = EngineProxy.new( {:content => content, :type => type, :view => self})
+        proxy = EngineProxy.new( :content => content, :type => type, :view => self )
         proxy_buffer << proxy
         proxy
       end    
@@ -44,10 +44,10 @@ module Panorama
       ['xml', 'doctype'].each do |method_name|
         module_eval "
           def #{method_name}( *args, &blk )
-            add_proxy_to_buffer( '#{method_name}', *args, &blk )
+            add_tag_proxy_to_buffer( '#{method_name}', *args, &blk )
           end
         "  
-      end
+      end 
     end
       
   end

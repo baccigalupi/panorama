@@ -2,6 +2,7 @@ module Panorama
   class Page < View 
     include Engine::PageHtmlMethods
     
+    # Allows the class-level definition of html declaration in one simple place
     def self.html( *args )
       easy_opt = if [Symbol, String].include?( args.first.class )
         @xhml = false 
@@ -59,9 +60,7 @@ module Panorama
     def render_panorama(meth) 
       clear_output
       page_markup(meth)
-      puts proxy_buffer.inspect 
       first_level = proxy_buffer.dump
-      puts first_level.inspect
       first_level.map{|proxy| proxy.render}.flatten
     end
     
