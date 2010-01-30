@@ -27,7 +27,6 @@ module Panorama
       end
     end  
     
-    
     def self.requires(*args)
       if args.last.class == Hash
         @defaults = Hash.new( args.pop )
@@ -132,10 +131,15 @@ module Panorama
     
     def render_panorama(meth) 
       clear_output
-      send(meth) 
+      build_proxy(meth) 
       first_level = proxy_buffer.dump
-      first_level.map{|proxy| proxy.render}#.flatten
+      first_level.map{ |proxy| proxy.render }
+      output
     end
+    
+    def build_proxy(meth)
+      send(meth)
+    end  
     
     def clear_output 
       output.clear 

@@ -40,11 +40,11 @@ module Panorama
       @xml_opts = @xhml = @doctype_opts = nil
     end 
      
-    def page_markup(markup_method = :markup)
+    def page_markup(meth)
       html_declaration
       html do
         head_html
-        send(markup_method)    
+        send(meth)
       end  
     end 
     
@@ -57,15 +57,9 @@ module Panorama
       head
     end
     
-    def render_panorama(meth) 
-      clear_output
-      page_markup(meth)
-      first_level = proxy_buffer.dump
-      
-      first_level.map do |proxy|
-        proxy.render
-      end#.flatten
-    end
+    def build_proxy(meth)
+      page_markup(meth) 
+    end  
     
     # methods to be overwritten in the descendents
     def head
