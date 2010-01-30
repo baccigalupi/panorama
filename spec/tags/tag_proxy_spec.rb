@@ -85,7 +85,7 @@ describe "Tag Proxying"  do
     describe 'rendering' do
       it 'should delegate render to the tag' do 
         proxy = Panorama::TagProxy.new(:content => 'my text', :type => 'em', :view => @view)
-        proxy.render.should == [proxy.tag.render]
+        proxy.render.should == proxy.tag.render
       end 
     end   
     

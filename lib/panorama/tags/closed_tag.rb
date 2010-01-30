@@ -10,9 +10,7 @@ module Panorama
       
     def render(level=nil) 
       super(level)
-      output = head
-      output << tail
-      output
+      output << head + tail
     end  
 
     METHOD_NAMES = ['area', 'base', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link', 'meta']

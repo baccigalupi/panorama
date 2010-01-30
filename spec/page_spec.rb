@@ -14,11 +14,11 @@ describe Panorama::Page do
     describe 'html declaration' do
       describe 'default' do 
         it 'should build an xml opening tag by default' do 
-          MyLayout.render.first.should match /<\?xml encoding=\"utf-8\" version=\"1.0\" \?>/
+          MyLayout.render.should match /\A<\?xml encoding=\"utf-8\" version=\"1.0\" \?>/ 
         end
         
         it 'should build a xhtml transitional doctype tag by default' do
-          MyLayout.render[1].should match /<!DOCTYPE.*XHTML 1.0 Transitional/
+          MyLayout.render.should match /<!DOCTYPE.*XHTML 1.0 Transitional/
         end      
         
         it '#xml? should be true by default' do
@@ -78,7 +78,7 @@ describe Panorama::Page do
           MyLayout.html :strict
           MyLayout.doctype_options.should == [:strict, Gnash.new]
         end 
-      end
+      end  
     end  
     
     describe 'head' do

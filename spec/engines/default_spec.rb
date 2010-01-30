@@ -98,20 +98,20 @@ describe "Default Views" do
   end  
   
   describe 'rendering' do 
-    it 'should render first level tag proxies' do
-      SimpleTag.render.first.should match(/<p>\s*simple tag\s*<\/p>/)
+    it 'should render first level tag proxies' do 
+      SimpleTag.render.should match(/<p>\s*simple tag\s*<\/p>/)
     end 
     
     it 'should render first level tag proxies with blocks' do 
-      BlockWithString.render.first.should match(/<p>\s*block with string\s*<\/p>/)
+      BlockWithString.render.should match(/<p>\s*block with string\s*<\/p>/)
     end
     
     it 'should render a second level nested proxy' do
-      BlockWithTag.render.first.should match(/<p>\s*<b>\s*block with tag\s*<\/b>\s*<\/p>/)
+      BlockWithTag.render.should match(/<p>\s*<b>\s*block with tag\s*<\/b>\s*<\/p>/)
     end     
         
     it 'should render nested proxies' do 
-      NestedBlock.render.first.should match(
+      NestedBlock.render.should match(
         /<p>\s*<a href="http:\/\/rubyghetto.com"\>\s*<h1>\s*Ruby Ghetto\s*<\/h1>\s*<img src="http:\/\/rubyghetto.com\/images\/ruby_ghetto.gif" \/>\s*<\/a>\s*<\/p>/
       )
     end      
@@ -124,17 +124,17 @@ describe "Default Views" do
       end
         
       it 'should not indent first level tags' do 
-        SimpleTag.render.first.should match(/^<p>\s*simple tag\s*<\/p>\s*$/)
+        SimpleTag.render.should match(/^<p>\s*simple tag\s*<\/p>\s*$/)
       end
       
       it 'should indent second level tags' do 
-        BlockWithTag.render.first.should match(
+        BlockWithTag.render.should match(
           /\A<p>\n?#{@str}<b>\n?#{@str*2}block with tag\n?#{@str}<\/b>\n?<\/p>\n?\z/
         ) 
       end
       
       it 'should indent nested tags to an appropriate level' do 
-        NestedBlock.render.first.should match(
+        NestedBlock.render.should match(
           /\A<p>\n*#{@str}<a href="http:\/\/rubyghetto.com"\>\n*#{@str*2}<h1>\n*#{@str*3}Ruby Ghetto\n*#{@str*2}<\/h1>\n*#{@str*2}<img src="http:\/\/rubyghetto.com\/images\/ruby_ghetto.gif" \/>\n*#{@str}<\/a>\n*<\/p>\s*\z/
         ) 
       end
@@ -142,8 +142,8 @@ describe "Default Views" do
     
     describe 'line breaks' do    
       it 'should add a new line after each tag and around content' do
-        SimpleTag.render.first.should match(/^<p>\n\s*simple tag\s*\n<\/p>\n$/) 
-        BlockWithTag.render.first.should match(/\A<p>\n\s*<b>\n\s*block with tag\n\s*<\/b>\n<\/p>\n\z/)
+        SimpleTag.render.should match(/^<p>\n\s*simple tag\s*\n<\/p>\n$/) 
+        BlockWithTag.render.should match(/\A<p>\n\s*<b>\n\s*block with tag\n\s*<\/b>\n<\/p>\n\z/)
       end   
     end  
   end    

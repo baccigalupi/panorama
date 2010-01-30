@@ -99,10 +99,10 @@ module Panorama
       else  
         view = new(opts)
       end  
-      output = view.render
+      output = view.renders
       view.recycle
       output
-    end
+    end 
     
     # needed by erb to grab the bindings of the object
     def context
@@ -123,13 +123,18 @@ module Panorama
       else
         render_external(meth)
       end    
-    end 
+    end
+    
+    def renders(meth=:markup)
+      out = render(meth)
+      out.is_a?( Array ) ? out.join('') : out
+    end  
     
     def render_panorama(meth) 
       clear_output
       send(meth) 
       first_level = proxy_buffer.dump
-      first_level.map{|proxy| proxy.render}.flatten
+      first_level.map{|proxy| proxy.render}#.flatten
     end
     
     def clear_output 

@@ -61,7 +61,10 @@ module Panorama
       clear_output
       page_markup(meth)
       first_level = proxy_buffer.dump
-      first_level.map{|proxy| proxy.render}.flatten
+      
+      first_level.map do |proxy|
+        proxy.render
+      end#.flatten
     end
     
     # methods to be overwritten in the descendents

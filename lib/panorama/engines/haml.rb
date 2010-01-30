@@ -3,6 +3,7 @@ require 'haml'
 module Panorama
   module Engine
     class Haml 
+
       def self.render(text, options = {}, &block)
         scope  = options.delete(:scope)  
         raise ArgumentError, "Missing scope for Haml's engine." unless scope

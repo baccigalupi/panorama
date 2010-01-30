@@ -107,39 +107,77 @@ describe Panorama::View do
       Panorama::View.instance_variable_set("@pool", nil) # clearing it out
     end
     
-    it 'should create an instance' do 
-      view = Panorama::View.new
-      Panorama::View.should_receive(:new).and_return( view )
-      Panorama::View.render
-    end 
+    describe 'instance pooling' do
+      it 'should create an instance' do 
+        view = Panorama::View.new
+        Panorama::View.should_receive(:new).and_return( view )
+        Panorama::View.render
+      end 
     
-    it 'should recycle instances to the pool' do
-      view = Panorama::View.new
-      Panorama::View.should_receive(:new).and_return( view )
-      view.should_receive(:recycle)
-      Panorama::View.render
-    end
+      it 'should recycle instances to the pool' do
+        view = Panorama::View.new
+        Panorama::View.should_receive(:new).and_return( view )
+        view.should_receive(:recycle)
+        Panorama::View.render
+      end
     
-    it 'should grab a recycled instance instead of creating a new one' do 
-      view = Panorama::View.new
-      Panorama::View.render 
-      Panorama::View.should_not_receive(:new)
-      pool = Panorama::Pool.new(20)
-      Panorama::View.stub!(:pool).and_return( pool )
-      pool.should_receive(:get).and_return( view)
-      Panorama::View.render
-    end
-    
-    it 'should render methods other than #markup' do
-      class AltMark < Panorama::View 
-        engine_type :panorama 
-        def alt_markup
-          p "I am alternative markup"
-        end
-      end  
-      view = AltMark.new
-      view.render(:alt_markup).first.should include('<p>', 'alternative') 
+      it 'should grab a recycled instance instead of creating a new one' do 
+        view = Panorama::View.new
+        Panorama::View.render 
+        Panorama::View.should_not_receive(:new)
+        pool = Panorama::Pool.new(20)
+        Panorama::View.stub!(:pool).and_return( pool )
+        pool.should_receive(:get).and_return( view)
+        Panorama::View.render
+      end    
     end   
+    
+    describe 'markup method rendering' do
+      class MyView < Panorama::View
+        engine_type :panorama
+        def markup
+          p "go view"
+        end
+      end
+      
+      it 'class level #render should render to a string' do 
+        rendered = MyView.render
+        rendered.class.should == String
+        rendered.should include('go view')
+      end    
+        
+      it 'instance #renders should flatten render to string' do
+        view = MyView.new
+        view.renders.class.should == String
+        view.renders.should include('go view')                   
+      end    
+    
+      it 'should render #markup by default' do 
+        class StandardMark < Panorama::View
+          engine_type :panorama
+          def markup
+            p "standard fair"
+          end
+        end
+        view = StandardMark.new 
+        view.renders.should include('standard fair')    
+      end
+    
+      it 'should render a custom markup methods' do
+        class AltMark < Panorama::View 
+          engine_type :panorama 
+          def alt_markup
+            p "I am alternative markup"
+          end
+        end  
+        view = AltMark.new 
+        view.renders(:alt_markup).should include('alternative') 
+      end 
+      
+      it 'should have a class method #renders that renders to string' do 
+        
+      end  
+    end        
     
     describe 'engine proxies' do
       class Hamler < Panorama::View
@@ -165,17 +203,17 @@ describe Panorama::View do
           erb "<p><%= erb_method %></p>" 
         end
       end  
-        
-      [:haml, :erb].each do |method| 
+      
+      [:haml, :erb].each do |method|
         it "should have a proxy for ##{method}" do 
           view = Panorama::View.new
           view.should respond_to(method)
         end
         
         it 'should render via a proxy' do 
-          klass = (method.to_s.camelize + 'er').constantize
+          klass = (method.to_s.camelize + 'er').constantize 
           renderings = klass.render  
-          renderings[1].should include method.to_s
+          renderings.should include method.to_s
         end  
       end  
     end  

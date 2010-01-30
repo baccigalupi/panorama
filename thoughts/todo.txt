@@ -23,7 +23,6 @@ caching
   via Rails internals 
 render
   class method goes directly to string
-  additional render method that does to string
   
   
   

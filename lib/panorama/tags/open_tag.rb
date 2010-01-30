@@ -20,21 +20,28 @@ module Panorama
       self.content = blk
     end  
     
-    attr_writer :output
-    def output 
-      @output ||= view ? view.output : []
-    end
-    
-    require 'cgi'
+    def clear_output
+      @output = nil
+    end  
+      
     def render(level=nil, &blk)
       super(level)
       self.content = blk if block_given? 
       render_content
       
-      self.output = head 
+      self.output << head 
       middle # renders to output itself! 
       self.output << tail
-      output
+      self.output
+    end
+    
+    def middle 
+      buffer = proxy_buffer.dump 
+      if buffer.empty?
+        output << "#{content_indentation}#{rendered_content}\n" if has_content?
+      else 
+        buffer.map{|proxy| proxy.render( indentation_level+1 ); }
+      end
     end
     
     def head
@@ -60,15 +67,6 @@ module Panorama
     def content_indentation
       Panorama.indentation(indentation_level+1)
     end  
-    
-    def middle
-      buffer = proxy_buffer.dump 
-      if buffer.empty?
-        output << "#{content_indentation}#{rendered_content}\n" if has_content?
-      else
-        buffer.map{|proxy| proxy.render(output, indentation_level+1 )}
-      end
-    end
     
     def inspect
       "#<#{self.class} #{head}#{content.is_a?(String) ? content : '{block}'}#{tail.gsub(/\s/, '')} >"

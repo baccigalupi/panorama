@@ -9,14 +9,12 @@ module Panorama
         "Valid tag type required to generate a tag proxy. '#{type}' is not a valid tag type." unless @tag
       if @tag.is_a?(OpenTag)
         @tag.content = content if @tag && content && !@tag.content 
-      else
-        
       end    
       @tag.view = self.view
     end
     
-    def render(buffer = output, level = 0)
-      buffer << tag.render(level)
+    def render(level = 0) 
+      tag.render(level) # tag puts the output into its view buffer
     end 
   end 
 end      

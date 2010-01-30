@@ -106,6 +106,11 @@ SUPER
       output.should match(/Kane: Cog in Wheel/)
     end
     
+    it 'should render with #renders' do 
+      view = Titleous.new(:name => 'Kane', :title => 'Cog in Wheel')
+      view.renders.should match(/Kane: Cog in Wheel/)
+    end  
+    
   end  
      
 end   

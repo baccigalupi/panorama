@@ -22,13 +22,17 @@ module Panorama
       view ? view.proxy_buffer : []
     end   
      
+    def output 
+      @output ||= view ? view.output : []
+    end
+    
     def self.type
       @tag ||= self.to_s.downcase.gsub("panorama::", '').to_sym
     end 
     
     def type
       self.class.type
-    end   
+    end
     
     def classes
       @classes ||= []
@@ -83,6 +87,10 @@ module Panorama
     # Rendering: Used by subclasses ----------
     def render(level)
       @indentation_level = level if level
+    end
+    
+    def renders(level=nil, &blk)
+      render(level, &blk).join('')
     end  
     
     def indentation
