@@ -171,12 +171,19 @@ describe Panorama::View do
           end
         end  
         view = AltMark.new 
-        view.renders(:alt_markup).should include('alternative') 
+        view.renders(:method => :alt_markup).should include('alternative') 
       end 
       
       it 'should have a class method #renders that renders to string' do 
-        
-      end  
+        view = MyView.new
+        MyView.render.should == view.renders
+      end 
+      
+      it 'should take an option indentatin level' do
+        view = MyView.new
+        output = view.renders(:method => :markup, :level => 2)
+        output.should match(/    <p>\n      go view\n    <\/p>/) 
+      end   
     end        
     
     describe 'engine proxies' do

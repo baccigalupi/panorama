@@ -116,24 +116,26 @@ module Panorama
       self.class.engine_type
     end    
      
-    def render(meth=:markup, &blk)
+    def render(opts={}, &blk)
+      markup_method = opts.delete(:method) || :markup
+      level = opts.delete(:level) || 0
       if engine_type == :panorama
-        render_panorama(meth, &blk)
+        render_panorama(markup_method, level, &blk)
       else
-        render_external(meth)
+        render_external(markup_method)
       end    
     end
     
-    def renders(meth=:markup, &blk)
-      out = render(meth, &blk)
+    def renders(opts={}, &blk)
+      out = render(opts, &blk)
       out.is_a?( Array ) ? out.join('') : out
     end  
     
-    def render_panorama(meth, &blk) 
+    def render_panorama(meth, level, &blk) 
       clear_output
       build_proxy(meth, &blk) 
       first_level = proxy_buffer.dump
-      first_level.map{ |proxy| proxy.render }
+      first_level.map{ |proxy| proxy.render(level) }
       output
     end
     

@@ -37,15 +37,19 @@ module Panorama
       def build_tag_proxy( type, *args, &blk )
         content = [String, Symbol].include?(args.first.class) ? args.shift  : nil 
         opts = args.first || Gnash.new
-        opts.merge!(:type => type, :view => self, :tag_content => content)
+        opts.merge!(:type => type, :view => self, :proxy_content => content)
         TagProxy.new( opts, &blk )
       end 
       
       def build_engine_proxy( content, type )
-        proxy = EngineProxy.new( :tag_content => content, :type => type, :view => self )
+        proxy = EngineProxy.new( :proxy_content => content, :type => type, :view => self )
         proxy_buffer << proxy
         proxy
-      end    
+      end
+      
+      def partial( instance )
+        # add a partial proxy to the stack
+      end      
     end
     
     module PageHtmlMethods 
@@ -95,7 +99,6 @@ module Panorama
         " 
       end 
         
-    end
-      
-  end
-end    
+    end # PageHtmlMethods
+  end # Engine
+end # Panorama   

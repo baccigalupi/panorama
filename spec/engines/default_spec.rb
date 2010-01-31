@@ -214,7 +214,31 @@ describe "Default Views" do
       end       
     end  
   end 
-  
+
+  describe '#partial' do 
+    class Partialed < Panorama::View 
+      def markup
+        p do 
+          partial( SimpleTag.new )
+        end
+      end    
+    end  
+      
+    it 'should create a parial proxy for the view' do   
+      view = Partialed.new 
+      view.markup
+      view.proxy_buffer.size.should == 2
+      view.proxy_buffer.last.class.should == Panorama::PartialProxy
+    end  
+    
+    it 'render an instance inline' do 
+      pending
+      output = Partialed.render
+      output.should match(/<p>\s*<p>\s*simple tag\s*<\/p>\s*<\/p>/) 
+    end 
+    
+  end    
+
   describe 'indentation' do
     describe 'levels' do
       before do 
