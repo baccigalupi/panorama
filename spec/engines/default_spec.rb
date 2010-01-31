@@ -170,6 +170,49 @@ describe "Default Views" do
         output.should include('got some <script>illegalling()</script> to do??')
       end  
     end        
+  
+    describe 'blocks' do 
+      before(:each) do  
+        @regex = /<p>\s*<a href="http:\/\/rubyghetto.com"\>\s*<h1>\s*Ruby Ghetto\s*<\/h1>\s*<img src="http:\/\/rubyghetto.com\/images\/ruby_ghetto.gif" \/>\s*<\/a>\s*<\/p>/
+      end
+        
+      describe 'instance methods' do
+        it '#render should accept a block with an argument' do 
+          view = Yielding.new
+          output = view.render do |html|
+            html.a :href => 'http://rubyghetto.com' do
+              html.h1 "Ruby Ghetto"
+              html.img :src => 'http://rubyghetto.com/images/ruby_ghetto.gif'
+            end   
+          end 
+          output = output.join('')
+          output.should match( @regex ) 
+        end
+      
+        it '#render should accept a block with an argument' do
+          view = Yielding.new
+          output = view.renders do |html|
+            html.a :href => 'http://rubyghetto.com' do
+              html.h1 "Ruby Ghetto"
+              html.img :src => 'http://rubyghetto.com/images/ruby_ghetto.gif'
+            end   
+          end 
+          output.should match( @regex ) 
+        end 
+      end
+      
+      describe 'class #render' do
+        it 'should accept a block with an argument' do 
+          output = Yielding.render do |html|
+            html.a :href => 'http://rubyghetto.com' do
+              html.h1 "Ruby Ghetto"
+              html.img :src => 'http://rubyghetto.com/images/ruby_ghetto.gif'
+            end   
+          end 
+          output.should match( @regex ) 
+        end  
+      end       
+    end  
   end 
   
   describe 'indentation' do

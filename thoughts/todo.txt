@@ -1,8 +1,6 @@
 better locals
   - accessors
   - exceptions for local name overlaps with html tags
-pages
-  - proxy for inline rendering with a block
 partials
   - erb and haml proxies should receive file objects as content
   - partial( file object or dir string )

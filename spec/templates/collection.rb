@@ -71,4 +71,20 @@ class Inheritance < TagWithVariable
       em super_special if super_special
     end  
   end
-end          
+end 
+
+class Yielding < Panorama::View 
+  def markup
+    p do 
+      yield self if block_given?
+    end  
+  end  
+end 
+
+class LightlyYield < Panorama::View
+  def markup
+    p do
+      yield if block_given?
+    end
+  end
+end                

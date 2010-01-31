@@ -91,14 +91,14 @@ module Panorama
     end      
     
     # Rendering --------------------------------
-    def self.render(opts={})
+    def self.render(opts={}, &blk)
       view = self.pool.get 
       if view
         view.load(opts)
       else  
         view = new(opts)
       end  
-      output = view.renders
+      output = view.renders(&blk)
       view.recycle
       output
     end 
@@ -116,29 +116,29 @@ module Panorama
       self.class.engine_type
     end    
      
-    def render(meth=:markup)
+    def render(meth=:markup, &blk)
       if engine_type == :panorama
-        render_panorama(meth)
+        render_panorama(meth, &blk)
       else
         render_external(meth)
       end    
     end
     
-    def renders(meth=:markup)
-      out = render(meth)
+    def renders(meth=:markup, &blk)
+      out = render(meth, &blk)
       out.is_a?( Array ) ? out.join('') : out
     end  
     
-    def render_panorama(meth) 
+    def render_panorama(meth, &blk) 
       clear_output
-      build_proxy(meth) 
+      build_proxy(meth, &blk) 
       first_level = proxy_buffer.dump
       first_level.map{ |proxy| proxy.render }
       output
     end
     
-    def build_proxy(meth)
-      send(meth)
+    def build_proxy(meth, &blk)
+      send(meth, &blk)
     end  
     
     def clear_output 
