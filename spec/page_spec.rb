@@ -5,12 +5,12 @@ describe Panorama::Page do
     MyLayout.clear_html_opts
   end  
   
-  class MyLayout < Panorama::Page
+  class MyLayout < Panorama::Page 
+    def head
+    end  
   end   
   
   describe 'special tags' do
-    # 'head', 'title', 'link', 'body' 
-    
     describe 'html declaration' do
       describe 'default' do 
         it 'should build an xml opening tag by default' do 
@@ -81,25 +81,120 @@ describe Panorama::Page do
       end  
     end  
     
-    describe 'head' do
-      it 'should create an tag proxy'
+    describe 'special head tags' do 
+      it 'page should by default have a head section' do   
+        MyLayout.render.should match(/<head>\s*<\/head>/) 
+      end  
+      
+      it 'should render head content into head tags' do 
+        class MyLayout
+          def head
+            p do 
+              "some content"
+            end
+          end
+        end      
+        output = MyLayout.render 
+        output.should match /<head>\s*<p>\s*some content\s*<\/p>\s*<\/head>/ 
+      end    
+      
+      it 'should have a #page_title tag proxy method that creates a title tag' do
+        class MyLayout < Panorama::Page
+          requires :description
+          def head
+            page_title "#{self.class.to_s} | #{self[:description]}"
+          end
+        end
+        
+        output = MyLayout.render(:description => 'partial description here!') 
+        output.should include "MyLayout"
+        output.should include "partial description here!"    
+      end 
+      
+      
+      it '#page_title should alias to #title' do
+        class MyLayout < Panorama::Page
+          requires :description
+          def head
+            title "#{self.class.to_s} | #{self[:description]}"
+          end
+        end
+        
+        output = MyLayout.render(:description => 'partial description here!') 
+        output.should include "MyLayout"
+        output.should include "partial description here!"
+      end
+        
+      it '#title should not exist is View classes, just in Page classes' do 
+        Panorama::View.new.should_not respond_to(:title)
+      end
+        
+      it '#meta should take a hash with the first pair mapping key to "name" and value to "content"' do  
+        class MyLayout < Panorama::Page 
+          requires :description
+          def head
+            meta :description => self[:description]
+          end
+        end 
+        output = MyLayout.render(:description => "fruitty goodness")
+        output.should match(/<meta name=\"description\" content=\"fruitty goodness\"/)
+      end
+        
+      it '#meta should not get smart about the first pair if it special' do 
+        class MyLayout < Panorama::Page 
+          requires :description
+          def head
+            meta :name => "description", :content => self[:description]
+          end
+        end                     
+        output = MyLayout.render(:description => "fruitty goodness")
+        output.should match(/<meta name=\"description\" content=\"fruitty goodness\"/)
+        
+        class MyLayout < Panorama::Page 
+          requires :description
+          def head
+            meta :lang => 'fr', :name => "description", :content => self[:description]
+          end
+        end                     
+        output = MyLayout.render(:description => "fruitty goodness")
+        output.should match(/<meta name=\"description\" content=\"fruitty goodness\"/)  
+      end
+        
+      it 'should have a #meta_description proxier' do  
+        class MyLayout < Panorama::Page
+          requires :description
+          def head 
+            meta_description self[:description]
+          end
+        end
+        output = MyLayout.render(:description => 'fruitty goodness') 
+        output.should match(/<meta name=\"description\" content=\"fruitty goodness\"/)  
+      end
+        
+      it 'should have a #meta_author proxier' do
+        class MyLayout < Panorama::Page
+          requires # clear previous class requires statements
+          def head 
+            meta_author "Kane Baccigalupi"
+          end
+        end
+        output = MyLayout.render 
+        output.should match(/<meta name=\"author\" content=\"Kane Baccigalupi\"/)
+      end
+        
+      it 'should have a #meta_keywords proxier' do 
+        class MyLayout < Panorama::Page
+          def head 
+            meta_keywords "ruby views, erector, haml, erb"
+          end
+        end
+        output = MyLayout.render 
+        output.should match(/<meta name=\"keywords\" content=\"ruby views, erector, haml, erb\"/) 
+      end
     end
     
-    describe 'title' do 
-      it 'should have a #page_title method'
-      it 'should be aliased to #title'
-    end  
-    
-    describe 'meta tags' do 
-      it '#meta_description should make a meta description tag'
-      it '#meta_author should make a meta author tag'
-      it '#meta_keywords should make a meta keyword tag'
-      describe '#meta' do
-        it 'should take a hash with one pair mapping the key to name and the value to content'
-        it 'takes additional keys :lang and :dir' 
-      end
-      it '#meta_equiv should make a meta http-equiv tag'
-    end       
+    describe 'yielding and partials' do
+    end        
   end  
    
 end  

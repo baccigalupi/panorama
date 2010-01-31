@@ -2,9 +2,11 @@ better locals
   - accessors
   - exceptions for local name overlaps with html tags
 content escaping
-  h tag and auto escape of normal string content
+  auto escape all string contents
+  h tag for directly adding escaped text within a multi-line block
+  alias h to text
+  raw_text tag and unescaped content escape of normal string content
 pages
-  - different convenience tag proxy methods for head content
   - proxy for inline rendering with a block
 partials
   - erb and haml proxies should receive file objects as content
@@ -20,9 +22,6 @@ engines
   mustache ?? 
 caching 
   via moneta
-  via Rails internals 
-render
-  class method goes directly to string
-  
+  via Rails internals   
   
   

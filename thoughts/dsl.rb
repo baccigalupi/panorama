@@ -1,3 +1,6 @@
+# This is interesting, but unfortunately the Ruby parser can't reconcile block arguments
+# using this DSL, so dream on ...
+
 # possible operators &   *   +   -   <<   <=>   ==   []   []   []=  |  
 h1 "some text"
 p * "my_class" | "my_id" {

@@ -43,7 +43,9 @@ module Panorama
     def page_markup(meth)
       html_declaration
       html do
-        head_html
+        head_html do 
+          head
+        end  
         send(meth)
       end  
     end 
@@ -52,10 +54,6 @@ module Panorama
       xml if self.class.xml?
       doctype *self.class.doctype_options
     end  
-    
-    def head_html
-      head
-    end
     
     def build_proxy(meth)
       page_markup(meth) 

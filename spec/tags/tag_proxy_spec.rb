@@ -7,7 +7,7 @@ describe "Tag Proxying"  do
   
   describe 'superclass' do 
     it 'should take initialize an opts hash' do
-      proxy = Panorama::Proxy.new(:content => 'my content', :type => 'em', :view => @view) 
+      proxy = Panorama::Proxy.new(:tag_content => 'my content', :type => 'em', :view => @view) 
       proxy.content.should == 'my content'
     end  
   end    
@@ -78,7 +78,7 @@ describe "Tag Proxying"  do
     end 
     
     it 'should receive a content string as the first argument' do 
-      proxy = Panorama::TagProxy.new(:content => 'my text', :type => 'em', :view => @view )
+      proxy = Panorama::TagProxy.new(:tag_content => 'my text', :type => 'em', :view => @view )
       proxy.tag.content.should == 'my text'
     end
     

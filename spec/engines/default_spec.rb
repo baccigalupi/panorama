@@ -21,7 +21,7 @@ describe "Default Views" do
       'strong', 'style', 'sub', 'sup',
       'table', 'tbody', 'td', 'textarea', 'tfoot', 
       'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var'
-    ] + ['area', 'base', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link', 'meta']).each do |method|
+    ] + ['area', 'base', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link']).each do |method|
       
       it "should have a method ##{method}" do
         @view.should respond_to(method)

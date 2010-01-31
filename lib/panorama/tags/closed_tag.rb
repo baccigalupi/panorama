@@ -35,7 +35,10 @@ module Panorama
     def self.tail
       @tail ||= " ?>" 
     end   
-  end 
+  end
+  
+  # class META < ClosedTag  
+  # end   
   
   class DOCTYPE < ClosedTag 
     XHTML_TYPES = { 
