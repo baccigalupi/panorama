@@ -301,7 +301,18 @@ describe "Default Views" do
         output.should include("eat my local")    
       end
       
-      it 'should render engine partial when passed a string representing the path from the view directory'  
+      it 'should render engine partials when passed a string representing the relative path' do 
+        pending "need a way to get the views actual file as the start of the relative path"
+        class Partialed < Panorama::View
+          requires :pastie
+          def markup
+            p{ partial(:erb, "../templates/erb.html.erb") }
+          end
+        end
+        output = Partialed.render(:pastie => 'eat my local')
+        output.should include("From the land of ERB")
+        output.should include("eat my local")
+      end    
     end     
   end    
 

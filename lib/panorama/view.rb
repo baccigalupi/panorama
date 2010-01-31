@@ -31,6 +31,11 @@ module Panorama
       end
     end    
     
+    def self.dir
+      # TODO: change to point to the file of directory of the actual view file
+      File.dirname(__FILE__)
+    end  
+    
     def self.requires(*args)
       if args.last.class == Hash 
         @defaults = args.pop 
