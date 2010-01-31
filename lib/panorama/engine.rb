@@ -43,9 +43,16 @@ module Panorama
         append_proxy( EngineProxy.new( :proxy_content => content, :type => type, :view => self ) )
       end
       
-      def partial( instance )
-        instance.locals = self.locals.merge( instance.locals ) 
-        append_proxy( PartialProxy.new( :partial => instance, :view => self ) )
+      def partial( *args )
+        if args.size == 1 
+          instance = args.first
+          instance.locals = self.locals.merge( instance.locals ) 
+          append_proxy( PartialProxy.new( :partial => instance, :view => self ) )
+        else
+          engine_type = args[0]
+          file = args[1]
+          append_proxy( EngineProxy.new( :proxy_content => file.read, :type => engine_type, :view => self ) )
+        end    
       end      
     end
     

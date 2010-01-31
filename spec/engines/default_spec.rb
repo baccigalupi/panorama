@@ -274,7 +274,35 @@ describe "Default Views" do
       end 
       view = Partialed.new
       view.renders.should include "Kane"
-    end    
+    end 
+    
+    describe 'external engines' do 
+      it 'should render :erb partials when passed engine information and a file' do
+        class Partialed < Panorama::View
+          requires :pastie
+          def markup
+            p{ partial(:erb, File.new(File.dirname(__FILE__) + "/../templates/erb.html.erb"))}
+          end
+        end
+        output = Partialed.render(:pastie => 'eat my local')
+        output.should include("From the land of ERB")
+        output.should include("eat my local")    
+      end
+      
+      it 'should render :haml partials when passed engine information and a file' do
+        class Partialed < Panorama::View
+          requires :pastie
+          def markup
+            p{ partial(:haml, File.new(File.dirname(__FILE__) + "/../templates/haml.html.haml"))}
+          end
+        end
+        output = Partialed.render(:pastie => 'eat my local')
+        output.should include("From the land of Haml")
+        output.should include("eat my local")    
+      end
+      
+      it 'should render engine partial when passed a string representing the path from the view directory'  
+    end     
   end    
 
   describe 'indentation' do

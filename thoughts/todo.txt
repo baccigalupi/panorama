@@ -12,6 +12,7 @@ publishing:
   - pages can inline these files, or they can be published to a public location and html included   
 engines
   sass 
+  less
   mustache ?? 
 caching 
   via moneta
