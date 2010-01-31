@@ -216,27 +216,65 @@ describe "Default Views" do
   end 
 
   describe '#partial' do 
-    class Partialed < Panorama::View 
-      def markup
-        p do 
-          partial( SimpleTag.new )
-        end
-      end    
-    end  
-      
     it 'should create a parial proxy for the view' do   
+      class Partialed < Panorama::View 
+        def markup
+          partial( SimpleTag.new )
+        end    
+      end 
       view = Partialed.new 
-      view.markup
-      view.proxy_buffer.size.should == 2
-      view.proxy_buffer.last.class.should == Panorama::PartialProxy
+      view.markup 
+      view.proxy_buffer.size.should == 1
+      view.proxy_buffer.first.class.should == Panorama::PartialProxy
     end  
     
     it 'render an instance inline' do 
-      pending
+      class Partialed < Panorama::View 
+        def markup
+          p{ partial( SimpleTag.new ) }
+        end    
+      end 
       output = Partialed.render
       output.should match(/<p>\s*<p>\s*simple tag\s*<\/p>\s*<\/p>/) 
     end 
     
+    it 'should indent properly' do 
+      class Partialed < Panorama::View 
+        def markup
+          p{ partial( SimpleTag.new ) }
+        end    
+      end 
+      output = Partialed.render
+      output.should match(/<p>\n  <p>\n    simple tag\n  <\/p>\n<\/p>/)
+    end 
+    
+    it 'can work with instance derived from a variable' do 
+      class Partialed < Panorama::View
+        requires :template
+        def markup
+          p{ partial( self[:template] ) }
+        end
+      end    
+      output = Partialed.render(:template => SimpleTag.new)
+      output.should match(/<p>\s*<p>\s*simple tag\s*<\/p>\s*<\/p>/)  
+    end
+    
+    it 'should pass arguments from the parent view down to the partial view' do 
+      class Piece < Panorama::View
+        requires :current_user
+        def markup
+          h self[:current_user]
+        end 
+      end   
+      class Partialed < Panorama::View
+        requires :current_user => 'Kane'
+        def markup
+          p{ partial( Piece.new ) }
+        end
+      end 
+      view = Partialed.new
+      view.renders.should include "Kane"
+    end    
   end    
 
   describe 'indentation' do

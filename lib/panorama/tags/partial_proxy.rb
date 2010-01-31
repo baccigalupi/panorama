@@ -10,11 +10,8 @@ module Panorama
     
     def render(level = 0) 
       partial_output = partial.render(:level => level) 
-      if partial_output.is_a?(Array)
-        self.output += partial_output
-      else
-        self.output << partial_output
-      end    
+      self.output << partial_output
+      self.output.flatten!   
     end 
   end 
 end   

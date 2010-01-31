@@ -1,14 +1,15 @@
 module Panorama
   class View 
-    attr_reader :locals 
+    attr_accessor :locals 
     
     def initialize(opts={})
-      @locals = Gnash.new( defaults.merge(opts) ) 
       load( opts ) 
     end
     
     def defaults
-      self.class.defaults
+      self.class.superclass.ancestors.include?(Panorama::View) ? 
+        self.class.superclass.defaults.merge(self.class.defaults) : 
+        self.class.defaults
     end 
     
     def required
@@ -16,7 +17,10 @@ module Panorama
     end   
     
     def load( opts )
-      @locals.merge!(opts)
+      self.locals = Gnash.new( defaults.merge(opts) )  
+    end 
+    
+    def raise_require_exceptions
       if (keys = locals.keys) && required && !required.empty?
         missing = (required - keys)
         raise ArgumentError, "#{self.class} initialization requires additional variable(s): #{missing.inspect}" unless missing.empty?
@@ -25,16 +29,16 @@ module Panorama
           raise ArgumentError, "#{self.class} initialization only takes the following variable(s): #{required.inspect}. Additional variables were passed in: #{extra.inspect}" unless extra.empty?
         end  
       end
-    end  
+    end    
     
     def self.requires(*args)
-      if args.last.class == Hash
-        @defaults = Hash.new( args.pop )
+      if args.last.class == Hash 
+        @defaults = args.pop 
         args += defaults.keys
       end 
       if superclass.respond_to?( :required ) 
         args = (superclass.required || []) + args  
-      end  
+      end
       @required = args.uniq.map{ |x| x.to_s }
     end 
     
@@ -91,7 +95,7 @@ module Panorama
     end      
     
     # Rendering --------------------------------
-    def self.render(opts={}, &blk)
+    def self.render(opts={}, &blk) 
       view = self.pool.get 
       if view
         view.load(opts)
@@ -117,6 +121,7 @@ module Panorama
     end    
      
     def render(opts={}, &blk)
+      raise_require_exceptions
       markup_method = opts.delete(:method) || :markup
       level = opts.delete(:level) || 0
       if engine_type == :panorama

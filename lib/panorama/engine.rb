@@ -15,17 +15,6 @@ module Panorama
       alias :h :text  
       alias :raw_text :rawtext  
       
-      
-      def add_tag_proxy_to_buffer( tag_type, *args, &blk ) 
-        proxy = build_tag_proxy( tag_type, *args, &blk )
-        append_proxy( proxy )
-      end  
-      
-      def append_proxy( proxy ) 
-        proxy_buffer << proxy
-        proxy
-      end  
-      
       [:haml, :erb].each do |engine_type|
         module_eval "
           def #{engine_type}( content )
@@ -41,14 +30,22 @@ module Panorama
         TagProxy.new( opts, &blk )
       end 
       
-      def build_engine_proxy( content, type )
-        proxy = EngineProxy.new( :proxy_content => content, :type => type, :view => self )
+      def add_tag_proxy_to_buffer( tag_type, *args, &blk ) 
+        append_proxy( build_tag_proxy( tag_type, *args, &blk ) )
+      end  
+      
+      def append_proxy( proxy ) 
         proxy_buffer << proxy
         proxy
+      end  
+      
+      def build_engine_proxy( content, type )
+        append_proxy( EngineProxy.new( :proxy_content => content, :type => type, :view => self ) )
       end
       
       def partial( instance )
-        # add a partial proxy to the stack
+        instance.locals = self.locals.merge( instance.locals ) 
+        append_proxy( PartialProxy.new( :partial => instance, :view => self ) )
       end      
     end
     

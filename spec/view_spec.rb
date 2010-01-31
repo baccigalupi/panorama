@@ -32,28 +32,28 @@ describe Panorama::View do
     describe 'initialization' do 
       it 'should make local variables accessible as a hash in @locals' do  
         view = Panorama::View.new(:this => 'that')
-        view.instance_variable_get("@locals").should == Gnash.new(:this => 'that')
+        view.locals.should == Gnash.new(:this => 'that')
       end 
       
-      it 'should raise an error if it does not get the variables it needs' do
-        lambda{ NeedyView.new(:x => 'x') }.should raise_error( 
+      it 'should raise an error if it does not get the variables it needs at render time' do
+        lambda{ NeedyView.render(:x => 'x') }.should raise_error( 
           ArgumentError, 
           "NeedyView initialization requires additional variable(s): #{['y'].inspect}"
         )
-        lambda{ SelectiveView.new(:x => 'x') }.should raise_error( 
+        lambda{ SelectiveView.render(:x => 'x') }.should raise_error( 
           ArgumentError, 
           "SelectiveView initialization requires additional variable(s): #{['y'].inspect}" 
         )
       end  
       
-      it 'should not raise an error if it defined with #requires and then receives addition variables' do  
-        NeedyView.new(:x => 'x', :y => 'y', :alhpa => 'omega')
+      it 'should not raise an error at render time if it defined with #requires and then receives addition variables' do  
+        NeedyView.render(:x => 'x', :y => 'y', :alhpa => 'omega')
       end
       
-      it 'should raise an error if defined with #requires_only and receives additional variables' do
+      it 'should raise an error at render time if defined with #requires_only and receives additional variables' do
         # this wasn't working the raise_error way 
         begin
-          SelectiveView.new(:x => 'x', :y => 'y', :alhpa => 'omega') 
+          SelectiveView.render(:x => 'x', :y => 'y', :alhpa => 'omega') 
           raise "No error was raised"
         rescue Exception => e
           e.class.should == ArgumentError 
@@ -77,7 +77,22 @@ describe Panorama::View do
       view = Panorama::View.new(:this => 'that')
       view['this'].should == 'that'
       view[:this].should == 'that'
+    end
+    
+    it 'should include default values in locals' do
+      class DefaultingView < Panorama::View   
+        requires :template, :current_user => 'Kane'
+      end
+      DefaultingView.new(:template => true)[:current_user].should == 'Kane' 
     end 
+    
+    it 'should inherit default values from superclasses' do 
+      class DefaultingView < Panorama::View 
+        requires :current_user => 'Kane'
+      end
+      class SuperDefaulting < DefaultingView; end
+      SuperDefaulting.new[:current_user].should == "Kane" 
+    end    
   end  
   
   describe 'engine' do 
