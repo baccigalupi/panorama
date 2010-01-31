@@ -54,7 +54,12 @@ module Panorama
     
     def render_content
       @has_content = nil
-      @rendered_content = content.is_a?(Proc) ? content.call : content
+      @rendered_content = content.is_a?(Proc) ? content.call : escape_content
+    end
+    
+    # This is taken from ERB::Util
+    def escape_content
+      content.to_s.gsub(/&/, "&amp;").gsub(/\"/, "&quot;").gsub(/>/, "&gt;").gsub(/</, "&lt;") 
     end
     
     def has_content?
@@ -97,7 +102,33 @@ module Panorama
     Panorama.class_eval "
       class #{name} < OpenTag; end
     "
-  end   
+  end 
+  
+  class COMMENT < OpenTag 
+    def self.head
+      @head ||= "<!-- #{SUBSTITUTION_STRING}" 
+    end  
+    
+    def self.tail
+      @tail ||= "-->"
+    end 
+  end
+  
+  class TEXT < OpenTag 
+    def self.head
+      @head ||= "" 
+    end  
+    
+    def self.tail
+      @tail ||= ""
+    end
+  end
+  
+  class RAWTEXT < TEXT 
+    def escape_content
+      content 
+    end
+  end         
 end
 
     

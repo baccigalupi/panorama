@@ -4,13 +4,17 @@ module Panorama
     end  
     
     module HtmlMethods
-      (ClosedTag::METHOD_NAMES + OpenTag::METHOD_NAMES - ['title', 'meta', 'head']).each do |method_name|
+      ( ClosedTag::METHOD_NAMES + OpenTag::METHOD_NAMES - 
+        ['title', 'meta', 'head'] + ['comment', 'text', 'rawtext'] ).each do |method_name|
         module_eval "
           def #{method_name}( *args, &blk )
             add_tag_proxy_to_buffer( '#{method_name}', *args, &blk )
           end
         " 
-      end 
+      end  
+      alias :h :text  
+      alias :raw_text :rawtext  
+      
       
       def add_tag_proxy_to_buffer( tag_type, *args, &blk ) 
         proxy = build_tag_proxy( tag_type, *args, &blk )

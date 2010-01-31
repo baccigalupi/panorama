@@ -21,7 +21,8 @@ describe "Default Views" do
       'strong', 'style', 'sub', 'sup',
       'table', 'tbody', 'td', 'textarea', 'tfoot', 
       'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var'
-    ] + ['area', 'base', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link']).each do |method|
+    ] + ['area', 'base', 'br', 'col', 'frame', 'hr', 'img', 'input', 'link'] +
+        ['comment', 'raw_text', 'text', 'h'] ).each do |method|
       
       it "should have a method ##{method}" do
         @view.should respond_to(method)
@@ -114,7 +115,61 @@ describe "Default Views" do
       NestedBlock.render.should match(
         /<p>\s*<a href="http:\/\/rubyghetto.com"\>\s*<h1>\s*Ruby Ghetto\s*<\/h1>\s*<img src="http:\/\/rubyghetto.com\/images\/ruby_ghetto.gif" \/>\s*<\/a>\s*<\/p>/
       )
-    end      
+    end
+    
+    describe 'special tags' do 
+      it '#comment should comment out blocks of html markup' do 
+        class SpecialTaggifying < Panorama::View 
+          def markup
+            comment do 
+              p "not gonna show this"
+            end
+          end   
+        end
+        output = SpecialTaggifying.render
+        output.should match(/<!--\s*<p>\s*not gonna show this\s*<\/p>\s*-->/)  
+      end
+      
+      it 'tag contents that are strings should be escaped by default' do 
+        class SpecialTaggifying < Panorama::View 
+          def markup
+            p "got some <script>illegalling()</script> to do??"
+          end   
+        end
+        output = SpecialTaggifying.render
+        output.should include('got some &lt;script&gt;illegalling()&lt;/script&gt; to do??')
+      end  
+    
+      it 'should add escaped text via #h' do  
+        class SpecialTaggifying < Panorama::View 
+          def markup
+            h "got some <script>illegalling()</script> to do??"
+          end   
+        end
+        output = SpecialTaggifying.render
+        output.should include('got some &lt;script&gt;illegalling()&lt;/script&gt; to do??')
+      end
+        
+      it 'should add escaped text via #text' do  
+        class SpecialTaggifying < Panorama::View 
+          def markup
+            text "got some <script>illegalling()</script> to do??"
+          end   
+        end
+        output = SpecialTaggifying.render
+        output.should include('got some &lt;script&gt;illegalling()&lt;/script&gt; to do??')
+      end
+        
+      it 'should add unescaped text via #raw_text' do
+        class SpecialTaggifying < Panorama::View 
+          def markup
+            raw_text "got some <script>illegalling()</script> to do??"
+          end   
+        end
+        output = SpecialTaggifying.render
+        output.should include('got some <script>illegalling()</script> to do??')
+      end  
+    end        
   end 
   
   describe 'indentation' do

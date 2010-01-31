@@ -157,7 +157,8 @@ describe Panorama::Page do
           end
         end                     
         output = MyLayout.render(:description => "fruitty goodness")
-        output.should match(/<meta name=\"description\" content=\"fruitty goodness\"/)  
+        output.should match(/<meta name=\"description\"/)
+        output.should match(/content=\"fruitty goodness\"/)  
       end
         
       it 'should have a #meta_description proxier' do  

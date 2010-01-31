@@ -1,11 +1,6 @@
 better locals
   - accessors
   - exceptions for local name overlaps with html tags
-content escaping
-  auto escape all string contents
-  h tag for directly adding escaped text within a multi-line block
-  alias h to text
-  raw_text tag and unescaped content escape of normal string content
 pages
   - proxy for inline rendering with a block
 partials
