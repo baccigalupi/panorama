@@ -38,5 +38,5 @@ describe Panorama do
       Panorama.indentation_string( "\t" )
       Panorama.indentation_string.should == "\t"
     end    
-  end     
+  end
 end        

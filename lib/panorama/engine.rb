@@ -64,11 +64,8 @@ module Panorama
             append_proxy( PartialProxy.new( :partial => instance, :view => self ) )
           else
             engine_type = args[0]
-            file = args[1] 
-            # TODO: make it possible to load a relative path
-            # unless file.class == File 
-            #    file = File.new(self.class.dir + '/' + file) 
-            #  end  
+            file = args[1]
+            file = File.new(self.class.directory + file) unless file.class == File 
             append_proxy( EngineProxy.new( :proxy_content => file.read, :type => engine_type, :view => self ) )
           end    
         end 

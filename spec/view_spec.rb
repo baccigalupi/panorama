@@ -286,4 +286,30 @@ describe Panorama::View do
       end   
     end    
   end      
+
+  describe 'view directory' do
+    before(:each) do  
+      Panorama::View.directory = nil
+    end
+        
+    it 'should be an empty string by default' do 
+      Panorama::View.directory.should == ""
+    end
+      
+    it 'should be the RAILS view directory if RAILS_ROOT is defined' do  
+      RAILS_ROOT = File.dirname(__FILE__)
+      Panorama::View.directory.should == RAILS_ROOT + '/app/views'
+    end
+      
+    it 'should be settable' do 
+      Panorama::View.directory File.dirname(__FILE__) + '/templates'
+      Panorama::View.directory.should == File.dirname(__FILE__) + '/templates'
+    end
+      
+    it 'should inherit from it superclass' do
+      Panorama::View.directory File.dirname(__FILE__) + '/templates'
+      class NewView < Panorama::View; end 
+      NewView.directory.should == File.dirname(__FILE__) + '/templates'
+    end  
+  end  
 end

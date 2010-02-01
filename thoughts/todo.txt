@@ -1,9 +1,6 @@
 better locals
   - accessors
   - exceptions for local name overlaps with html tags
-partials
-  - partial( dir string )
-  - partial(:erb, file object or dir string) as different syntax for erb( file or dir )
 publishing:
   - css and sass to an external file
   - js to an external file
@@ -15,6 +12,8 @@ engines
   mustache ?? 
 caching 
   via moneta
-  via Rails internals   
+  via Rails internals 
+rails
+  integration with caching
   
   

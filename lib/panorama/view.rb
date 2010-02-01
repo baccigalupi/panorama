@@ -1,5 +1,7 @@
 module Panorama
-  class View 
+  class View
+    extend HasDirectory
+     
     attr_accessor :locals 
     
     def initialize(opts={})
@@ -175,6 +177,7 @@ module Panorama
     
     def indentation( times )
       Panorama.indentation( times )
-    end      
+    end
+          
   end
 end    
