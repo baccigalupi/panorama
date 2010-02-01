@@ -1,6 +1,6 @@
 module Panorama
   class View
-    extend HasDirectory
+    extend HasDirectories
      
     attr_accessor :locals 
     

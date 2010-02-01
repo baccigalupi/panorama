@@ -287,29 +287,57 @@ describe Panorama::View do
     end    
   end      
 
-  describe 'view directory' do
-    before(:each) do  
-      Panorama::View.directory = nil
+  describe 'directories' do
+    before(:all) do
+      @template_dir = File.dirname(__FILE__) + '/templates'
     end
+      
+    describe 'view' do
+      before(:each) do  
+        Panorama::View.directory = nil
+      end
         
-    it 'should be an empty string by default' do 
-      Panorama::View.directory.should == ""
-    end
+      it 'should be an empty string by default' do 
+        Panorama::View.directory.should == ""
+      end
       
-    it 'should be the RAILS view directory if RAILS_ROOT is defined' do  
-      RAILS_ROOT = File.dirname(__FILE__)
-      Panorama::View.directory.should == RAILS_ROOT + '/app/views'
-    end
+      it 'should be the RAILS view directory if RAILS_ROOT is defined' do  
+        RAILS_ROOT = File.dirname(__FILE__)
+        Panorama::View.directory.should == RAILS_ROOT + '/app/views'
+      end
       
-    it 'should be settable' do 
-      Panorama::View.directory File.dirname(__FILE__) + '/templates'
-      Panorama::View.directory.should == File.dirname(__FILE__) + '/templates'
-    end
+      it 'should be settable' do 
+        Panorama::View.directory @template_dir
+        Panorama::View.directory.should == @template_dir
+      end
       
-    it 'should inherit from it superclass' do
-      Panorama::View.directory File.dirname(__FILE__) + '/templates'
-      class NewView < Panorama::View; end 
-      NewView.directory.should == File.dirname(__FILE__) + '/templates'
-    end  
+      it 'should inherit from it superclass' do
+        Panorama::View.directory @template_dir
+        class NewView < Panorama::View; end 
+        NewView.directory.should == @template_dir
+      end 
+    end
+    
+    describe 'externals: publication and subscription' do
+      it 'should default to the view directory plus "/externals"' do  
+        Panorama::View.publication_directory.should ==  @template_dir + "/externals"
+      end
+    
+      it 'should have directories for js and css' do 
+        Panorama::View.js_directory.should ==  @template_dir + "/externals/js"
+        Panorama::View.css_directory.should ==  @template_dir + "/externals/css"
+      end 
+      
+      it 'all publication directories should be settable' do  
+        Panorama::View.publication_directory "/foo"
+        Panorama::View.publication_directory.should == '/foo'
+        
+        Panorama::View.js_directory "/foo"
+        Panorama::View.js_directory.should == '/foo'
+        
+        Panorama::View.css_directory "/foo"
+        Panorama::View.css_directory.should == '/foo'
+      end   
+    end     
   end  
 end
